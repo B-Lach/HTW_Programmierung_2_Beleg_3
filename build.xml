@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project xmlns:jacoco="antlib:org.jacoco.ant" name="BinaryTree" default="info">
+  <!-- Properties used in our script -->
+  <property name="src.dir" value="src"/>
+  <property name="src.dir.test" value="src/tests"/>
+  <property name="build.dir" value="bin"/>
+  <property name="reports.dir" value="reports"/>
+  <property name="reports.exec" value="reports/jacoco.exec"/>
+  <!-- JaCoCo ant import to be able to run JaCoCo Ant Tasks -->
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="lib/jacoco/jacocoant.jar"/>
+  </taskdef>
+
+  <path id="classpath.test">
+    <pathelement location="lib/junit.jar"/>
+    <pathelement location="lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${build.dir}"/>
+  </path>
+  <!-- Info target -->
+  <target name="info" description="Print desccription of the project">
+    <echo>A binary tree visualization implemented using Java and Swing</echo>
+  </target>
+  <!-- Compile Main Sources target -->
+  <target name="compile" description="Compile main sources">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}" debug="true" deprecation="false" optimize="false" failonerror="true" includeantruntime="false">
+      <exclude name="**/tests/*.java" />
+      <src path="${src.dir}"/>
+    </javac>
+    <echo message="Compiled main sources"/>
+  </target>
+  <!-- Compile Test Sources target -->
+  <target name="compile-test" depends="compile" description="Compile test sources">
+    <javac srcdir="${src.dir.test}" destdir="${build.dir}" debug="true" deprecation="false" optimize="false" failonerror="true" includeantruntime="false">
+      <classpath refid="classpath.test"/>
+    </javac>
+    <echo message="Compiled test sources"/>
+  </target>
+  <!-- Run Tests  -->
+  <target name="test" depends="compile-test" description="Execute tests">
+    <mkdir dir="${reports.dir}"/>
+    <jacoco:coverage destfile="${reports.exec}">
+      <junit printsummary="on" haltonfailure="yes" fork="true">
+        <classpath>
+          <path refid="classpath.test"/>
+          <pathelement location="${build.dir}"/>
+        </classpath>
+
+        <formatter type="brief" usefile="false" />
+        <batchtest>
+          <fileset dir="${src.dir}" includes="**/*Tests.java" />
+        </batchtest>
+      </junit>
+    </jacoco:coverage>
+    <echo message="Testing done"/>
+  </target>
+<!-- Generate reports for code coverage -->
+  <target name="reports" depends="test">
+    <jacoco:report>
+      <executiondata>
+        <file file="${reports.exec}"/>
+      </executiondata>
+      <structure name="JaCoCo Code Coverage Result">
+        <classfiles>
+          <fileset dir="${build.dir}"/>
+        </classfiles>
+        <sourcefiles encoding="UTF-8">
+          <fileset dir="${src.dir}"/>
+        </sourcefiles>
+      </structure>
+      <!-- Producing the reports -->
+      <xml destfile="${reports.dir}/report.xml"/>
+    </jacoco:report>
+  </target>
+
+  <!-- Remove compiled sources or generated reports  -->
+  <target name="clean" description="Remove all genereate files">
+    <!-- remove the build folder -->
+    <delete dir="${build.dir}"/>
+    <echo message="Removed bin folder"/>
+    <!-- remove the reports folder -->
+    <delete dir="${reports.dir}"/>
+    <echo message="Removed reports folder"/>
+  </target>
+
+</project>
