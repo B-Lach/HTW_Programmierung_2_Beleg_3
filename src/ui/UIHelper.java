@@ -1,4 +1,7 @@
 package ui;
+
+import ui.console.ConsoleUI;
+
 /**
  * Main entry point for the user interface selection
  * @author Benny Lach
@@ -25,6 +28,7 @@ public class UIHelper {
 	}
 	
 	protected void showConsoleOutput() {
+		ConsoleUI.becomeVisible();
 		//TODO: implement logic
 	}
 	
