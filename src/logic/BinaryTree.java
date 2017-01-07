@@ -10,11 +10,11 @@ public class BinaryTree {
 
 	Node root;
 
-	public void addNode(int key, String name) {
+	public void addNode(String data) {
 
 		// creates a new node
 
-		Node newNode = new Node(key, name);
+		Node newNode = new Node(data);
 
 		// without a root node this will become root
 
@@ -38,7 +38,7 @@ public class BinaryTree {
 
 				// check whether new node goes on left or right side
 
-				if (key < focusNode.key) {
+				if (data.compareTo(focusNode.data) == -1) {
 
 					focusNode = focusNode.leftChild;
 
@@ -49,7 +49,7 @@ public class BinaryTree {
 						parent.leftChild = newNode;
 						return;
 					}
-				} else {
+				} else if(data.compareTo(focusNode.data) == 1) {
 
 					// puts node on right side
 					focusNode = focusNode.rightChild;
@@ -61,28 +61,32 @@ public class BinaryTree {
 						parent.rightChild = newNode;
 						return;
 					}
+				}else{
+					if(data.compareTo(focusNode.data) == 0){
+						System.out.println("no duplicate nodes allowed");
+					}
 				}
 			}
 		}
 	}
 
-	public boolean deleteNode(int key) {
+	public boolean deleteNode(String data) {
 
 		Node focusNode = root;
 		Node parent = root;
 
 		boolean isItLeftChild = true;
 
-		while (focusNode.key != key) {
+		while (focusNode.data.compareTo(data) != 0 ) {
 
 			parent = focusNode;
 
-			if (key < focusNode.key) {
+			if (data.compareTo(focusNode.data) == -1) {
 
 				isItLeftChild = true;
 
 				focusNode = focusNode.leftChild;
-			} else {
+			} else if(data.compareTo(focusNode.data) == 1) {
 
 				isItLeftChild = false;
 
@@ -135,17 +139,17 @@ public class BinaryTree {
 		return true;
 	}
 
-	public Node findNode(int key) {
+	public Node findNode(String data) {
 
 		// starts at top of the tree
 		Node focusNode = root;
 
-		while (focusNode.key != key) {
+		while (focusNode.data.compareTo(data) != 0) {
 
-			if (key < focusNode.key) {
+			if (data.compareTo(focusNode.data) == -1) {
 
 				focusNode = focusNode.leftChild;
-			} else {
+			} else if(data.compareTo(focusNode.data) == 1){
 				focusNode = focusNode.rightChild;
 			}
 

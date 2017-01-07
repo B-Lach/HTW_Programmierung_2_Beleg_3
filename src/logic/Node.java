@@ -1,20 +1,19 @@
 package logic;
 
 public class Node {
-	int key;
-	String name;
+
+	String data;
 	
 	Node leftChild;
 	Node rightChild;
 	
-	Node(int key, String name){
+	Node(String data){
 		
-		this.key = key;
-		this.name = name;
+		this.data = data;
 	}
 	
 	public String toString(){
 		
-		return name + " has the key " + key;
+		return data;
 	}
 }
