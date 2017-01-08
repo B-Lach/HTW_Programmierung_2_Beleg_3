@@ -1,6 +1,7 @@
 package ui;
 
-import ui.console.ConsoleUI;
+import ui.console.*;
+import ui.graphical.*;
 
 /**
  * Main entry point for the user interface selection
@@ -27,12 +28,17 @@ public class UIHelper {
 		}
 	}
 	
+	/**
+	 * Method to load the console ui
+	 */
 	protected void showConsoleOutput() {
 		ConsoleUI.becomeVisible();
-		//TODO: implement logic
 	}
 	
+	/**
+	 * Method to load th graphical ui
+	 */
 	protected void showGraphicOutput() {
-		// TODO: implement logic
+		GraphilcalUI.becomeVisible();
 	}
 }
