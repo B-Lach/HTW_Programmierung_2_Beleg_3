@@ -178,6 +178,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
 				System.out.println("title is not valid");
 			} else {
+				// TODO Call binary tree function to add node
 				System.out.println("Commited valid name: " + nodeName);
 			}
 		} else {
@@ -191,6 +192,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
 				System.out.println("title is not valid");
 			} else {
+				// TODO Call binary tree function to delete node
 				System.out.println("Commited valid name: " + nodeName);
 			}
 		} else {
@@ -199,7 +201,11 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	}
 	
 	private void deleteAllAction() {
-		System.out.println("Perform Delete All action");
+		Boolean delete = DialogHandler.showConfirmDialog("Do you really want to delete the tree?", "Delete All");
+		
+		if (delete) {
+			// TODO Call binary tree function to delete all
+		}
 	}
 	
 	private void cheatSheetAction() {
