@@ -8,6 +8,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import ui.graphical.dialog.DialogHandler;
+import ui.graphical.menuItem.MenuItemActionListener;
+import ui.graphical.menuItem.MenuItemDelegate;
+import ui.graphical.menuItem.MenuItemType;
+
 public class MainWindow extends JFrame implements MenuItemDelegate {
 	private final int WIDTH = 1024;
 	private final int HEIGHT = 768;
@@ -164,16 +169,33 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	}
 	
 	private void quitAction() {
-		System.out.println("Perform Quit action");
 		System.exit(0);
 	}
 	
 	private void addNodeAction() {
-		System.out.println("Perform Add Node action");
+		String nodeName = DialogHandler.showInputDialog("Enter the string you want to add");
+		if (nodeName != null) {
+			if (nodeName.isEmpty() || nodeName.length() > 3) {
+				System.out.println("title is not valid");
+			} else {
+				System.out.println("Commited valid name: " + nodeName);
+			}
+		} else {
+			System.out.println("User did cancel");
+		}
 	}
 	
 	private void deleteNodeAction() {
-		System.out.println("Perform Delete Node acion");
+		String nodeName = DialogHandler.showInputDialog("Enter the string of the node you want to delete");
+		if (nodeName != null) {
+			if (nodeName.isEmpty() || nodeName.length() > 3) {
+				System.out.println("title is not valid");
+			} else {
+				System.out.println("Commited valid name: " + nodeName);
+			}
+		} else {
+			System.out.println("User did cancel");
+		}
 	}
 	
 	private void deleteAllAction() {
