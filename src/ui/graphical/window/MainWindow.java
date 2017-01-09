@@ -19,7 +19,7 @@ import ui.graphical.menuItem.MenuItemType;
 import ui.graphical.tree.TreePanel;
 
 public class MainWindow extends JFrame implements MenuItemDelegate {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2061144514357325585L;
 	
 	private final int WIDTH = 1024;
 	private final int HEIGHT = 768;

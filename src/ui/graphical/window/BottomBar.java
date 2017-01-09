@@ -10,7 +10,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 public class BottomBar extends JPanel {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6074525239267172224L;
+	
 	private JLabel statusLabel;
 	
 	public BottomBar(JFrame frame) {
