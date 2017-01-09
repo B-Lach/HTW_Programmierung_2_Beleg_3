@@ -8,7 +8,7 @@ package logic;
  */
 public class BinaryTree {
 
-	Node root;
+	private Node root;
 
 	public void addNode(String data) {
 
@@ -175,6 +175,10 @@ public class BinaryTree {
 		return focusNode;
 	}
 
+	public Node getRootNode() {
+		return root;
+	}
+	
 	public void preorderTraverseTree(Node focusNode) {
 		if (focusNode != null) {
 
