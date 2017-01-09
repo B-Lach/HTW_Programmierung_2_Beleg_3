@@ -1,5 +1,8 @@
 package ui.graphical;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -7,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.Timer;
 
 import ui.graphical.dialog.DialogHandler;
 import ui.graphical.menuItem.MenuItemActionListener;
@@ -14,12 +18,12 @@ import ui.graphical.menuItem.MenuItemDelegate;
 import ui.graphical.menuItem.MenuItemType;
 
 public class MainWindow extends JFrame implements MenuItemDelegate {
+	private static final long serialVersionUID = 1L;
+	
 	private final int WIDTH = 1024;
 	private final int HEIGHT = 768;
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	
+	private BottomBar statusBar;
 	
 	public MainWindow() {
 		
@@ -31,6 +35,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		setSize(WIDTH, HEIGHT);
 		
 		addMenuBar();
+		addStatusBar();
 	}
 	
 	@Override
@@ -79,6 +84,11 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		bar.add(getHelpMenu());
 		
 		setJMenuBar(bar);
+	}
+	
+	private void addStatusBar() {
+		statusBar = new BottomBar(this);
+		add(statusBar, BorderLayout.SOUTH);
 	}
 	
 	private JMenu getFileMenu() {
@@ -176,7 +186,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		String nodeName = DialogHandler.showInputDialog("Enter the string you want to add");
 		if (nodeName != null) {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
-				System.out.println("title is not valid");
+				statusBar.updateStatus("The given String is not valid");
 			} else {
 				// TODO Call binary tree function to add node
 				System.out.println("Commited valid name: " + nodeName);
@@ -190,7 +200,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		String nodeName = DialogHandler.showInputDialog("Enter the string of the node you want to delete");
 		if (nodeName != null) {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
-				System.out.println("title is not valid");
+				statusBar.updateStatus("The given String is not valid");
 			} else {
 				// TODO Call binary tree function to delete node
 				System.out.println("Commited valid name: " + nodeName);
