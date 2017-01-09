@@ -1,4 +1,4 @@
-package ui.graphical;
+package ui.graphical.window;
 
 import java.awt.Dimension;
 
@@ -20,7 +20,7 @@ public class BottomBar extends JPanel {
 		setPreferredSize(new Dimension(frame.getWidth(), 16));
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
-		statusLabel = new JLabel("status");
+		statusLabel = new JLabel("");
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		add(statusLabel);

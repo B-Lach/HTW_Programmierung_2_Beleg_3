@@ -1,4 +1,4 @@
-package ui.graphical;
+package ui.graphical.window;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
