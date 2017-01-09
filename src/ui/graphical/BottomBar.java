@@ -17,7 +17,6 @@ public class BottomBar extends JPanel {
 		super();
 		
 		setBorder(new BevelBorder(BevelBorder.LOWERED));
-		System.out.println("Frame width: " + frame.getWidth());
 		setPreferredSize(new Dimension(frame.getWidth(), 16));
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
