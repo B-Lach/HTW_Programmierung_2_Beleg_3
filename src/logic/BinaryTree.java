@@ -65,7 +65,7 @@ public class BinaryTree {
 					// check if a duplicate node is being added
 				} else {
 					if (data.compareTo(focusNode.data) == 0) {
-						System.out.println("no duplicate nodes allowed");
+						System.out.println("add: no duplicate nodes allowed");
 						return;
 					}
 				}
@@ -148,7 +148,7 @@ public class BinaryTree {
 			}
 			return true;
 		}
-		System.out.println("node not found");
+		System.out.println("delete: node not found");
 		return false;
 	}
 
