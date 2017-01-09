@@ -1,4 +1,4 @@
-package ui.graphical;
+package ui.graphical.menuItem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
