@@ -24,6 +24,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private final int HEIGHT = 768;
 	
 	private BottomBar statusBar;
+	private Timer timer;
 	
 	public MainWindow() {
 		
@@ -187,6 +188,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		if (nodeName != null) {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
 				statusBar.updateStatus("The given String is not valid");
+				clearStatusAfterTime(3000);
 			} else {
 				// TODO Call binary tree function to add node
 				System.out.println("Commited valid name: " + nodeName);
@@ -201,6 +203,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		if (nodeName != null) {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
 				statusBar.updateStatus("The given String is not valid");
+				clearStatusAfterTime(3000);
 			} else {
 				// TODO Call binary tree function to delete node
 				System.out.println("Commited valid name: " + nodeName);
@@ -216,6 +219,23 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		if (delete) {
 			// TODO Call binary tree function to delete all
 		}
+	}
+	
+	/**
+	 * Method to clear the current status label of the bottom bar after a specific time
+	 * @param time The given delay in milliseconds after the status label should be cleared.  
+	 */
+	private void clearStatusAfterTime(int time) {
+		if (timer != null) { timer.stop(); }
+		
+		timer = new Timer(time, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				statusBar.updateStatus("");
+			}
+		});
+		timer.setRepeats(false); 
+		timer.start();
 	}
 	
 	private void cheatSheetAction() {
