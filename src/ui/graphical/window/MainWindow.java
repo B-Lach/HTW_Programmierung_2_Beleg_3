@@ -16,6 +16,7 @@ import ui.graphical.dialog.DialogHandler;
 import ui.graphical.menuItem.MenuItemActionListener;
 import ui.graphical.menuItem.MenuItemDelegate;
 import ui.graphical.menuItem.MenuItemType;
+import ui.graphical.tree.TreePanel;
 
 public class MainWindow extends JFrame implements MenuItemDelegate {
 	private static final long serialVersionUID = 1L;
@@ -24,6 +25,8 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private final int HEIGHT = 768;
 	
 	private BottomBar statusBar;
+	private TreePanel treePanel;
+	
 	private Timer timer;
 	
 	public MainWindow() {
@@ -37,6 +40,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		
 		addMenuBar();
 		addStatusBar();
+		addTreeFrame();
 	}
 	
 	@Override
@@ -90,6 +94,11 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private void addStatusBar() {
 		statusBar = new BottomBar(this);
 		add(statusBar, BorderLayout.SOUTH);
+	}
+	
+	private void addTreeFrame() {
+		treePanel = new TreePanel(getWidth(), getHeight() - 16); 
+		add(treePanel);
 	}
 	
 	private JMenu getFileMenu() {
