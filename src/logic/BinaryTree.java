@@ -10,7 +10,7 @@ public class BinaryTree {
 
 	private Node root;
 
-	public void addNode(String data) {
+	public Boolean addNode(String data) {
 
 		// creates a new node
 
@@ -21,7 +21,7 @@ public class BinaryTree {
 		if (root == null) {
 
 			root = newNode;
-
+			return true;
 		} else {
 
 			// sets root as starting point for traversing the tree
@@ -47,7 +47,7 @@ public class BinaryTree {
 
 						// places new node on the left
 						parent.setLeftChild(newNode);
-						return;
+						return true;
 					}
 				} else if (data.compareTo(focusNode.getData()) > 0) {
 
@@ -59,14 +59,14 @@ public class BinaryTree {
 
 						// place new ndoe on the right
 						parent.setRightChild(newNode);
-						return;
+						return true;
 					}
 
 					// check if a duplicate node is being added
 				} else {
 					if (data.compareTo(focusNode.getData()) == 0) {
 						System.out.println("add: no duplicate nodes allowed");
-						return;
+						return false;
 					}
 				}
 			}
