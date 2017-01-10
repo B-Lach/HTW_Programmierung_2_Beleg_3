@@ -3,14 +3,18 @@ package ui.graphical.window;
 import java.io.File;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import ui.graphical.dialog.DialogHandler;
@@ -130,18 +134,31 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * @return The file menu
 	 */
 	private JMenu getFileMenu() {
+		// On macOS we are using CMD, on Windows people are using CTRL 
+		// Instead of InputEvent.SHIFT_MASK what always is CTRL we are using
+		// ShortcutKeyMask to respect the different keys on macOS and Windows
+		int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		
 		JMenuItem newItem = new JMenuItem("New");
 		newItem.addActionListener(new MenuItemActionListener(MenuItemType.New, this));
+		// CTRL+N shortcut
+		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ctrl));
 		
 		JMenuItem newFromFileItem = new JMenuItem("Open...");
 		newFromFileItem.addActionListener(new MenuItemActionListener(MenuItemType.NewFromFile, this));
+		// CTRL+O shortcut
+		newFromFileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ctrl));
 		
 		JMenuItem saveItem = new JMenuItem("Save");
 		saveItem.addActionListener(new MenuItemActionListener(MenuItemType.Save, this));
+		// CTRL+S
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ctrl));
 		saveItem.setEnabled(false);
 		
 		JMenuItem saveToItem = new JMenuItem("Save to..."); 
 		saveToItem.addActionListener(new MenuItemActionListener(MenuItemType.SaveTo, this));
+		// SHIFT+CTRL+S
+		saveToItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ctrl | InputEvent.SHIFT_MASK));
 		
 		JMenuItem quitItem = new JMenuItem("Quit");
 		quitItem.addActionListener(new MenuItemActionListener(MenuItemType.Quit, this));
@@ -163,14 +180,25 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * @return The edit menu
 	 */
 	private JMenu getEditMenu() {
+		// On macOS we are using CMD, on Windows people are using CTRL 
+		// Instead of InputEvent.SHIFT_MASK what always is CTRL we are using
+		// ShortcutKeyMask to respect the different keys on macOS and Windows
+		int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		
 		JMenuItem addItem = new JMenuItem("Add node");
 		addItem.addActionListener(new MenuItemActionListener(MenuItemType.AddNode, this));
+		// CTRL+A shortcut
+		addItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ctrl));
 		
 		JMenuItem deleteItem = new JMenuItem("Delete node");
 		deleteItem.addActionListener(new MenuItemActionListener(MenuItemType.DeleteNode, this));
+		// CTRL+D shortcut
+		deleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ctrl));
 		
 		JMenuItem deleteAllItem = new JMenuItem("Delete all");
 		deleteAllItem.addActionListener(new MenuItemActionListener(MenuItemType.DeleteAll, this));
+		// SHIFT+CTRL+D shortcut
+		deleteAllItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ctrl | InputEvent.SHIFT_MASK));
 		
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.add(addItem);
