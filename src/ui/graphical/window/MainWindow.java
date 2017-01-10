@@ -134,6 +134,9 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * @return The file menu
 	 */
 	private JMenu getFileMenu() {
+		// On macOS we are using CMD, on Windows people are using CTRL 
+		// Instead of InputEvent.SHIFT_MASK what always is CTRL we are using
+		// ShortcutKeyMask to respect the different keys on macOS and Windows
 		int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
 		JMenuItem newItem = new JMenuItem("New");
@@ -177,6 +180,9 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * @return The edit menu
 	 */
 	private JMenu getEditMenu() {
+		// On macOS we are using CMD, on Windows people are using CTRL 
+		// Instead of InputEvent.SHIFT_MASK what always is CTRL we are using
+		// ShortcutKeyMask to respect the different keys on macOS and Windows
 		int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
 		JMenuItem addItem = new JMenuItem("Add node");
@@ -192,7 +198,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		JMenuItem deleteAllItem = new JMenuItem("Delete all");
 		deleteAllItem.addActionListener(new MenuItemActionListener(MenuItemType.DeleteAll, this));
 		// SHIFT+CTRL+D shortcut
-		deleteAllItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ctrl | InputEvent.SHIFT_MASK ));
+		deleteAllItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ctrl | InputEvent.SHIFT_MASK));
 		
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.add(addItem);
