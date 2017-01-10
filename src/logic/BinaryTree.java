@@ -38,33 +38,33 @@ public class BinaryTree {
 
 				// check whether new node goes on left or right side
 
-				if (data.compareTo(focusNode.data) < 0) {
+				if (data.compareTo(focusNode.getData()) < 0) {
 
-					focusNode = focusNode.leftChild;
+					focusNode = focusNode.getLeftChild();
 
 					// if left child has no children
 					if (focusNode == null) {
 
 						// places new node on the left
-						parent.leftChild = newNode;
+						parent.setLeftChild(newNode);
 						return;
 					}
-				} else if (data.compareTo(focusNode.data) > 0) {
+				} else if (data.compareTo(focusNode.getData()) > 0) {
 
 					// puts node on right side
-					focusNode = focusNode.rightChild;
+					focusNode = focusNode.getRightChild();
 
 					// if right child has no children
 					if (focusNode == null) {
 
 						// place new ndoe on the right
-						parent.rightChild = newNode;
+						parent.setRightChild(newNode);
 						return;
 					}
 
 					// check if a duplicate node is being added
 				} else {
-					if (data.compareTo(focusNode.data) == 0) {
+					if (data.compareTo(focusNode.getData()) == 0) {
 						System.out.println("add: no duplicate nodes allowed");
 						return;
 					}
@@ -87,20 +87,20 @@ public class BinaryTree {
 
 		boolean isItLeftChild = true;
 		if (root != null) {
-			while (focusNode.data.compareTo(data) != 0) {
+			while (focusNode.getData().compareTo(data) != 0) {
 
 				parent = focusNode;
 
-				if (data.compareTo(focusNode.data) < 0) {
+				if (data.compareTo(focusNode.getData()) < 0) {
 
 					isItLeftChild = true;
 
-					focusNode = focusNode.leftChild;
-				} else if (data.compareTo(focusNode.data) > 0) {
+					focusNode = focusNode.getLeftChild();
+				} else if (data.compareTo(focusNode.getData()) > 0) {
 
 					isItLeftChild = false;
 
-					focusNode = focusNode.rightChild;
+					focusNode = focusNode.getRightChild();
 				}
 
 				if (focusNode == null) {
@@ -108,31 +108,31 @@ public class BinaryTree {
 				}
 			}
 
-			if (focusNode.leftChild == null && focusNode.rightChild == null) {
+			if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
 					root = null;
 				} else if (isItLeftChild) {
-					parent.leftChild = null;
+					parent.setLeftChild(null);
 				} else {
-					parent.rightChild = null;
+					parent.setRightChild(null);
 				}
-			} else if (focusNode.rightChild == null) {
+			} else if (focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
-					root = focusNode.leftChild;
+					root = focusNode.getLeftChild();
 				} else if (isItLeftChild) {
-					parent.leftChild = focusNode.leftChild;
+					parent.setLeftChild(focusNode.getLeftChild());
 				} else {
-					parent.rightChild = focusNode.leftChild;
+					parent.setRightChild(focusNode.getLeftChild());
 				}
-			} else if (focusNode.leftChild == null) {
+			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
-					root = focusNode.rightChild;
+					root = focusNode.getRightChild();
 				} else if (isItLeftChild) {
-					parent.leftChild = focusNode.rightChild;
+					parent.setLeftChild(focusNode.getRightChild());
 				} else {
-					parent.rightChild = focusNode.leftChild;
+					parent.setRightChild(focusNode.getLeftChild());
 				}
 			} else {
 				Node replacement = getReplacementNode(focusNode);
@@ -140,11 +140,11 @@ public class BinaryTree {
 				if (focusNode == root) {
 					root = replacement;
 				} else if (isItLeftChild) {
-					parent.leftChild = replacement;
+					parent.setLeftChild(replacement);
 				} else {
-					parent.rightChild = replacement;
+					parent.setRightChild(replacement);
 				}
-				replacement.leftChild = focusNode.leftChild;
+				replacement.setLeftChild(focusNode.getLeftChild());
 			}
 			return true;
 		}
@@ -157,13 +157,13 @@ public class BinaryTree {
 		// starts at top of the tree
 		Node focusNode = root;
 
-		while (focusNode.data.compareTo(data) != 0) {
+		while (focusNode.getData().compareTo(data) != 0) {
 
-			if (data.compareTo(focusNode.data) < 0) {
+			if (data.compareTo(focusNode.getData()) < 0) {
 
-				focusNode = focusNode.leftChild;
-			} else if (data.compareTo(focusNode.data) > 0) {
-				focusNode = focusNode.rightChild;
+				focusNode = focusNode.getLeftChild();
+			} else if (data.compareTo(focusNode.getData()) > 0) {
+				focusNode = focusNode.getRightChild();
 			}
 
 			// if node is not found
@@ -184,9 +184,9 @@ public class BinaryTree {
 
 			System.out.println(focusNode);
 
-			preorderTraverseTree(focusNode.leftChild);
+			preorderTraverseTree(focusNode.getLeftChild());
 
-			preorderTraverseTree(focusNode.rightChild);
+			preorderTraverseTree(focusNode.getRightChild());
 		}
 	}
 
@@ -195,17 +195,17 @@ public class BinaryTree {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
 
-		Node focusNode = replacedNode.rightChild;
+		Node focusNode = replacedNode.getRightChild();
 
 		while (focusNode != null) {
 			replacementParent = replacement;
 			replacement = focusNode;
-			focusNode = focusNode.leftChild;
+			focusNode = focusNode.getLeftChild();
 		}
 
-		if (replacement != replacedNode.rightChild) {
-			replacementParent.leftChild = replacement.rightChild;
-			replacement.rightChild = replacedNode.rightChild;
+		if (replacement != replacedNode.getRightChild()) {
+			replacementParent.setLeftChild(replacement.getRightChild());
+			replacement.setRightChild(replacedNode.getRightChild());
 		}
 		return replacement;
 	}
