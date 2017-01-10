@@ -2,18 +2,39 @@ package logic;
 
 public class Node {
 
-	String data;
+	private String data;
 	
-	Node leftChild;
-	Node rightChild;
+	private Node leftChild;
+	private Node rightChild;
 	
-	Node(String data){
-		
+	public Node(String data){
 		this.data = data;
 	}
 	
+	// setter
+	
+	protected void setLeftChild(Node node) {
+		leftChild = node;
+	}
+	
+	protected void setRightChild(Node node) {
+		rightChild = node;
+	}
+	
+	// getters
+	public Node getLeftChild() {
+		return leftChild;
+	}
+	
+	public Node getRightChild() {
+		return rightChild;
+	}
+	
+	public String getData() {
+		return data;
+	}
+	
 	public String toString(){
-		
 		return data;
 	}
 }
