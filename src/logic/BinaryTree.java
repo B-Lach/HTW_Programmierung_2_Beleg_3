@@ -26,9 +26,9 @@ public class BinaryTree {
 		theTree.addNode("15");
 		theTree.addNode("30");
 		theTree.addNode("75");
-		theTree.addNode("85");
-
-		theTree.saveTreeToFile();
+		theTree.addNode("85");	
+		
+		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
 	}
 
 	private Node root;
@@ -202,16 +202,18 @@ public class BinaryTree {
 		return root;
 	}
 
-	public void saveTreeToFile() {
+	public Boolean saveTreeToFile(String stringPath) {
 		Node focusNode = root;
-
-		ArrayList<String> treeArray = preorderTraverseTree(focusNode);
+		
+		ArrayList<String> treeArray = new ArrayList<String>();
+		preorderTraverseTree(focusNode, treeArray);
+		
 		System.out.println(treeArray.toString());
 		System.out.println("save to file");
 		// TODO replace own code with production when finished
 		// fetch path string from console commit path to binary tree object for
 		// handling
-		Path storePath = Paths.get("C:/Users/Rico/Documents/test.txt");
+		Path storePath = Paths.get(stringPath);
 		System.out.println("Path to file: " + storePath);
 
 		if (!Files.isWritable(storePath)) {
@@ -220,7 +222,7 @@ public class BinaryTree {
 			} catch (IOException e) {
 				System.out.println("Failed to create file:\n" + e);
 				e.printStackTrace();
-				return;
+				return false;
 			}
 		}
 
@@ -228,32 +230,25 @@ public class BinaryTree {
 			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
 			for (String s : treeArray) {
 				writer.println(s);
-				writer.close();
 			}
+			writer.close();
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		// TODO implement logic
+		return true;
 	}
 
-	private ArrayList<String> preorderTraverseTree(Node focusNode) {
+	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
+		if (focusNode != null && list != null) {
+			list.add(focusNode.getData());
+			preorderTraverseTree(focusNode.getLeftChild(), list);
 
-		ArrayList<String> treeArray = new ArrayList<String>();
-
-		if (focusNode != null) {
-
-			String node = focusNode.toString();
-			treeArray.add(node);
-
-			preorderTraverseTree(focusNode.getLeftChild());
-
-			preorderTraverseTree(focusNode.getRightChild());
+			preorderTraverseTree(focusNode.getRightChild(), list);
 		}
-		System.out.println(treeArray.toString());
-		return treeArray;
-
+		System.out.println(list.toString());
 	}
 
 	private Node getReplacementNode(Node replacedNode) {
