@@ -95,6 +95,9 @@ public class BinaryTree {
 			}
 		}
 	}
+	public boolean deleteAll(){
+		return true;
+	}
 
 	/**
 	 * delete method for nodes
@@ -130,7 +133,7 @@ public class BinaryTree {
 					return false;
 				}
 			}
-
+			// leaf node 
 			if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -140,6 +143,7 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(null);
 				}
+			// only left child
 			} else if (focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -149,14 +153,16 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(focusNode.getLeftChild());
 				}
+			// only right child
 			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
 					root = focusNode.getRightChild();
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getRightChild());
 				} else {
-					parent.setRightChild(focusNode.getLeftChild());
+					parent.setRightChild(focusNode.getRightChild());
 				}
+			// left and right child
 			} else {
 				Node replacement = getReplacementNode(focusNode);
 
@@ -252,7 +258,7 @@ public class BinaryTree {
 	}
 
 	private Node getReplacementNode(Node replacedNode) {
-
+		System.out.println("Node to replace: " + replacedNode.toString());
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
 
@@ -263,7 +269,11 @@ public class BinaryTree {
 			replacement = focusNode;
 			focusNode = focusNode.getLeftChild();
 		}
-
+		
+		System.out.println("Node to replace: " + replacedNode.toString());
+		System.out.println("Node to replacement parent: " + replacementParent.toString());
+		System.out.println("Node to replacement: " + replacement.toString());
+		
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
 			replacement.setRightChild(replacedNode.getRightChild());
