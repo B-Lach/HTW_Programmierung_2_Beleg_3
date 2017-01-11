@@ -2,11 +2,12 @@ package logic;
 
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.ArrayList;
 
 /**
  * binary tree class
@@ -26,7 +27,7 @@ public class BinaryTree {
 		theTree.addNode("30");
 		theTree.addNode("75");
 		theTree.addNode("85");
-		
+
 		theTree.saveTreeToFile();
 	}
 
@@ -204,6 +205,8 @@ public class BinaryTree {
 	public void saveTreeToFile() {
 		Node focusNode = root;
 
+		ArrayList<String> treeArray = preorderTraverseTree(focusNode);
+		System.out.println(treeArray.toString());
 		System.out.println("save to file");
 		// TODO replace own code with production when finished
 		// fetch path string from console commit path to binary tree object for
@@ -223,11 +226,9 @@ public class BinaryTree {
 
 		try {
 			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
-			if (focusNode != null) {
-				writer.println(preorderTraverseTree(focusNode));
+			for (String s : treeArray) {
+				writer.println(s);
 				writer.close();
-			} else {
-				System.out.println("cant save nothing you dummy");
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
@@ -237,27 +238,21 @@ public class BinaryTree {
 		// TODO implement logic
 	}
 
-	public String preorderTraverseTree(Node focusNode) {
+	private ArrayList<String> preorderTraverseTree(Node focusNode) {
 
-		String error = "error traversing the tree";
+		ArrayList<String> treeArray = new ArrayList<String>();
 
-			if (focusNode != null) {
-				try{
-					
-				String node = focusNode.toString();
-				System.out.println(focusNode);
-				return node;
-				
-				} finally {
-					preorderTraverseTree(focusNode.getLeftChild());
+		if (focusNode != null) {
 
-					preorderTraverseTree(focusNode.getRightChild());
-				}
+			String node = focusNode.toString();
+			treeArray.add(node);
 
-			}
-		
+			preorderTraverseTree(focusNode.getLeftChild());
 
-		return error;
+			preorderTraverseTree(focusNode.getRightChild());
+		}
+		System.out.println(treeArray.toString());
+		return treeArray;
 
 	}
 
