@@ -1,5 +1,13 @@
 package logic;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 /**
  * binary tree class
  * 
@@ -7,6 +15,20 @@ package logic;
  *
  */
 public class BinaryTree {
+
+	public static void main(String[] args) {
+
+		BinaryTree theTree = new BinaryTree();
+
+		theTree.addNode("50");
+		theTree.addNode("25");
+		theTree.addNode("15");
+		theTree.addNode("30");
+		theTree.addNode("75");
+		theTree.addNode("85");
+		
+		theTree.saveTreeToFile();
+	}
 
 	private Node root;
 
@@ -178,16 +200,65 @@ public class BinaryTree {
 	public Node getRootNode() {
 		return root;
 	}
-	
-	public void preorderTraverseTree(Node focusNode) {
-		if (focusNode != null) {
 
-			System.out.println(focusNode);
+	public void saveTreeToFile() {
+		Node focusNode = root;
 
-			preorderTraverseTree(focusNode.getLeftChild());
+		System.out.println("save to file");
+		// TODO replace own code with production when finished
+		// fetch path string from console commit path to binary tree object for
+		// handling
+		Path storePath = Paths.get("C:/Users/Rico/Documents/test.txt");
+		System.out.println("Path to file: " + storePath);
 
-			preorderTraverseTree(focusNode.getRightChild());
+		if (!Files.isWritable(storePath)) {
+			try {
+				Files.createFile(storePath);
+			} catch (IOException e) {
+				System.out.println("Failed to create file:\n" + e);
+				e.printStackTrace();
+				return;
+			}
 		}
+
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
+			if (focusNode != null) {
+				writer.println(preorderTraverseTree(focusNode));
+				writer.close();
+			} else {
+				System.out.println("cant save nothing you dummy");
+			}
+		} catch (IOException e) {
+			System.out.println("Failed to create FileWriter: " + e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// TODO implement logic
+	}
+
+	public String preorderTraverseTree(Node focusNode) {
+
+		String error = "error traversing the tree";
+
+			if (focusNode != null) {
+				try{
+					
+				String node = focusNode.toString();
+				System.out.println(focusNode);
+				return node;
+				
+				} finally {
+					preorderTraverseTree(focusNode.getLeftChild());
+
+					preorderTraverseTree(focusNode.getRightChild());
+				}
+
+			}
+		
+
+		return error;
+
 	}
 
 	private Node getReplacementNode(Node replacedNode) {
