@@ -168,7 +168,7 @@ public class ConsoleUI {
 					addNode();
 					break;
 				case 2:
-					removeNode();
+					deleteNode();
 					break;
 				case 3:
 					deleteTree();
@@ -187,10 +187,10 @@ public class ConsoleUI {
 	private static void addNode() {
 		System.out.println("******** Add node ********");
 		if (tree == null ) { tree = new BinaryTree();}
-		System.out.print("Type the data you want to add <quit> to cancel:");
+		System.out.print("Type the data you want to add\n<quit> to cancel:");
 		String input = InputHandler.getStringInput();
 		
-		StringValidationType validation = StringValidator.validateString(input, "quit");
+		StringValidationType validation = StringValidator.validateString(input, "quit", true);
 		
 		if(validation == StringValidationType.ShrinkInput) {
 			input = input.substring(0, 3);
@@ -208,9 +208,27 @@ public class ConsoleUI {
 	/**
 	 * Function to remove a node from tree
 	 */
-	private static void removeNode() {
+	private static void deleteNode() {
 		// TODO implement logic
 		System.out.println("****** Remove node *******");
+		
+		if (tree == null) {
+			System.out.println("There is nothing to delete");
+			return;
+		}
+		System.out.print("Type the data you want to delete\n<quit> to cancel:");
+		String input = InputHandler.getStringInput();
+		
+		StringValidationType validation = StringValidator.validateString(input, "quit", false);
+		if (validation == StringValidationType.Correct) {
+			if (tree.deleteNode(input)) {
+				System.out.println("Node with String <" + input + "> was deleted.");
+			} else {
+				System.out.println("Node with String <" + input + "> was not found.");
+			}
+		} else if (validation != StringValidationType.CancelSequence) {
+			System.out.println("Given input is not valid.");
+		}
 	}
 	
 	/**
@@ -262,7 +280,7 @@ public class ConsoleUI {
 		System.out.println("******* Manipulation *******");
 		System.out.println("*                          *");
 		System.out.println("* 1. Add node              *");
-		System.out.println("* 2. Remove node           *");
+		System.out.println("* 2. Delete node           *");
 		System.out.println("* 3. Delete tree           *");
 		System.out.println("* 4. Back                  *");
 		System.out.println("*                          *");
