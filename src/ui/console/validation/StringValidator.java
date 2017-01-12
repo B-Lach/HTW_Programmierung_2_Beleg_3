@@ -2,8 +2,21 @@ package ui.console.validation;
 
 import ui.console.input.InputHandler;
 
+/**
+ * Class that is used to validate strings
+ * @author Benny Lach
+ *
+ */
 public class StringValidator {
-	public static StringValidationType validateString(String input, String cancelSequence) {
+	
+	/**
+	 * Function to validate a given string
+	 * @param input The string to validate
+	 * @param cancelSequence The sequence that represents a cancel action
+	 * @param shrink Boolean that identifies if a String should be shrinked if it's too long
+	 * @return Result of the validation 
+	 */
+	public static StringValidationType validateString(String input, String cancelSequence, Boolean shrink) {
 		// string is null
 		if (input == null) {
 			return StringValidationType.Wrong;
@@ -19,8 +32,11 @@ public class StringValidator {
 		}
 		// string is too long
 		if (input.length() > 3) {
-			if (InputHandler.getBooleanInput("The string is to long. Do you want to auto shring the string to 3 characters? [y/n]", "y")) {
-				return StringValidationType.ShrinkInput;
+			// shrinking is accepted
+			if (shrink) {
+				if (InputHandler.getBooleanInput("The string is to long. Do you want to auto shring the string to 3 characters? [y/n]", "y")) {
+					return StringValidationType.ShrinkInput;
+				}
 			}
 			return StringValidationType.CancelSequence;
 		}
