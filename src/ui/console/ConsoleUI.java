@@ -72,7 +72,7 @@ public class ConsoleUI {
 					createTree();
 					break;
 				case 2:
-					createTreeFromFile();
+					loadTreeFromFile();
 					break;
 				case 3:
 					printTreeToConsole();
@@ -100,11 +100,11 @@ public class ConsoleUI {
 	/**
 	 * Function to create tree from file
 	 */
-	private static void createTreeFromFile() {
-		System.out.println("******* Read tree ********");
-		System.out.print("Write path to the file <quit> to cancel:");
+	private static void loadTreeFromFile() {
+		System.out.println("******* Load tree ********");
+		System.out.print("Input path to the file you want to load.\n<quit> to cancel:");
 		
-		// TODO replace own code with production when finished
+		// TODO Finalize when logic implemented
 		System.out.println("Under construction\n");
 				
 		// fetch path string from console and commit path to binary tree object for handling
@@ -131,34 +131,23 @@ public class ConsoleUI {
 	 * Function to save tree to file
 	 */
 	private static void saveTreeToFile() {
+		// TODO Finalize when logic implemented
 		System.out.println("****** Save to file ******");
-		// TODO replace own code with production when finished
-		// fetch path string from console commit path to binary tree object for handling 
-		Path storePath = Paths.get("/Coding/test.txt");
-		System.out.println("Path to file: " + storePath);
+		System.out.print("Input path to the file <quit> to cancel:");
 		
-		if(!Files.isWritable(storePath)) {
-			try {
-				Files.createFile(storePath);
-			} catch (IOException e) {
-				System.out.println("Failed to create file:\n" + e);
-				e.printStackTrace();
-				return;
-			}
+		if(tree == null) {
+			System.out.println("There is nothing to save!");
+			return;
 		}
-		
-		try {
-			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
-			for (String s:null) {
-				writer.println(s);
-			}
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("Failed to create FileWriter: " + e);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// TODO implement logic
+		System.out.println("Under construction");
+//		String pathString = InputHandler.getStringInput();
+//		if (!pathString.equals("quit")) {
+//			if (tree.loadFromFile(pathString)) {
+//				System.out.println("Tree was saved successfully");
+//			} else {
+//				System.out.println("Failed to save tree to file");
+//			}
+//		}
 	}
 	
 	/**
