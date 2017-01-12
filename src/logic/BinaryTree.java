@@ -213,12 +213,7 @@ public class BinaryTree {
 		
 		ArrayList<String> treeArray = new ArrayList<String>();
 		preorderTraverseTree(focusNode, treeArray);
-		
-		System.out.println(treeArray.toString());
-		System.out.println("save to file");
-		// TODO replace own code with production when finished
-		// fetch path string from console commit path to binary tree object for
-		// handling
+
 		Path storePath = Paths.get(stringPath);
 		System.out.println("Path to file: " + storePath);
 
@@ -240,7 +235,7 @@ public class BinaryTree {
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			return false;
 		}
@@ -258,10 +253,8 @@ public class BinaryTree {
 	}
 
 	private Node getReplacementNode(Node replacedNode) {
-		System.out.println("Node to replace: " + replacedNode.toString());
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
-
 		Node focusNode = replacedNode.getRightChild();
 
 		while (focusNode != null) {
@@ -269,11 +262,7 @@ public class BinaryTree {
 			replacement = focusNode;
 			focusNode = focusNode.getLeftChild();
 		}
-		
-		System.out.println("Node to replace: " + replacedNode.toString());
-		System.out.println("Node to replacement parent: " + replacementParent.toString());
-		System.out.println("Node to replacement: " + replacement.toString());
-		
+	
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
 			replacement.setRightChild(replacedNode.getRightChild());
