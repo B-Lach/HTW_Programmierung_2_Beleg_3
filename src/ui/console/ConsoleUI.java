@@ -102,8 +102,7 @@ public class ConsoleUI {
 	 */
 	private static void createTreeFromFile() {
 		System.out.println("******* Read tree ********");
-		System.out.println("Write path to the file");
-		System.out.println("Write <quit> to cancel");
+		System.out.print("Write path to the file <quit> to cancel:");
 		
 		// TODO replace own code with production when finished
 		System.out.println("Under construction\n");
@@ -132,7 +131,7 @@ public class ConsoleUI {
 	 * Function to save tree to file
 	 */
 	private static void saveTreeToFile() {
-		System.out.println("save to file");
+		System.out.println("****** Save to file ******");
 		// TODO replace own code with production when finished
 		// fetch path string from console commit path to binary tree object for handling 
 		Path storePath = Paths.get("/Coding/test.txt");
@@ -180,7 +179,7 @@ public class ConsoleUI {
 					addNode();
 					break;
 				case 2:
-					removeNodeByIndex();
+					removeNode();
 					break;
 				case 3:
 					deleteTree();
@@ -197,11 +196,12 @@ public class ConsoleUI {
 	 * Function to add a node to the tree
 	 */
 	private static void addNode() {
+		System.out.println("******** Add node ********");
 		if (tree == null ) { tree = new BinaryTree();}
 		System.out.print("Type the data you want to add <quit> to cancel:");
 		String input = InputHandler.getStringInput();
 		
-		StringValidationType validation = StringValidator.validateString(input);
+		StringValidationType validation = StringValidator.validateString(input, "quit");
 		
 		if(validation == StringValidationType.ShrinkInput) {
 			input = input.substring(0, 3);
@@ -211,7 +211,7 @@ public class ConsoleUI {
 			if (tree.addNode(input)) {
 				System.out.println("Node with String <" + input + "> was added successfully");
 			} else {
-				System.out.println("Node with String <" + input + "> is already in the tree");
+				System.out.println("Node with String <" + input + "> is already part of the tree");
 			}
 		}
 	}
@@ -219,17 +219,21 @@ public class ConsoleUI {
 	/**
 	 * Function to remove a node from tree
 	 */
-	private static void removeNodeByIndex() {
+	private static void removeNode() {
 		// TODO implement logic
-		System.out.println("Remove node by index");
+		System.out.println("****** Remove node *******");
 	}
 	
 	/**
 	 * Function to delete the whole tree
 	 */
 	private static void deleteTree() {
-		System.out.println("Delete tree");
-		// TODO implement logic
+		System.out.println("****** Delete tree *******");
+		if(InputHandler.getBooleanInput("Do you want to delete the tree? [y/n]", "y")){
+			// TODO implement logic
+			System.out.println("Under construction");
+//			tree.deleteAll();
+		}
 	}
 	
 	
