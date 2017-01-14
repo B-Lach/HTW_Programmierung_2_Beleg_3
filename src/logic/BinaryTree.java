@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,12 +28,23 @@ public class BinaryTree {
 		theTree.addNode("15");
 		theTree.addNode("30");
 		theTree.addNode("75");
-		theTree.addNode("85");	
-		
+		theTree.addNode("85");
+
 		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
+		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
 	}
 
 	private Node root;
+	final static Charset ENCODING = StandardCharsets.UTF_8;
+	private String stringPath;
+	
+	public void setStringPath(String path){
+		stringPath = path;
+	}
+	
+	public String getStringPath(){
+		return stringPath;
+	}
 
 	public Boolean addNode(String data) {
 
@@ -95,8 +108,13 @@ public class BinaryTree {
 			}
 		}
 	}
-	public boolean deleteAll(){
-		return true;
+
+	public boolean deleteAll() {
+		root = null;
+		if (root == null) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -133,7 +151,7 @@ public class BinaryTree {
 					return false;
 				}
 			}
-			// leaf node 
+			// leaf node
 			if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -143,7 +161,7 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(null);
 				}
-			// only left child
+				// only left child
 			} else if (focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -153,7 +171,7 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(focusNode.getLeftChild());
 				}
-			// only right child
+				// only right child
 			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
 					root = focusNode.getRightChild();
@@ -162,7 +180,7 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(focusNode.getRightChild());
 				}
-			// left and right child
+				// left and right child
 			} else {
 				Node replacement = getReplacementNode(focusNode);
 
@@ -207,13 +225,34 @@ public class BinaryTree {
 	public Node getRootNode() {
 		return root;
 	}
+	
+	public boolean loadTreeFromFile(String stringPath) {
+		
+		Path path = Paths.get(stringPath);
+		
+		if (Files.isReadable(path)) {
+			try {
+				ArrayList<String> treeArray = new ArrayList<String>();
+				treeArray = (ArrayList<String>) Files.readAllLines(path, ENCODING);
+				System.out.println("loaded array");
+				System.out.println(treeArray.toString());
+				return true;
+			} catch (IOException e) {
+				System.out.println("Wasn't able to get content from file");
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("The path isn't valid");
+		}
+		return false;
+	}
 
 	public Boolean saveTreeToFile(String stringPath) {
 		Node focusNode = root;
-		
+
 		ArrayList<String> treeArray = new ArrayList<String>();
 		preorderTraverseTree(focusNode, treeArray);
-		
+
 		System.out.println(treeArray.toString());
 		System.out.println("save to file");
 		// TODO replace own code with production when finished
@@ -269,11 +308,11 @@ public class BinaryTree {
 			replacement = focusNode;
 			focusNode = focusNode.getLeftChild();
 		}
-		
+
 		System.out.println("Node to replace: " + replacedNode.toString());
 		System.out.println("Node to replacement parent: " + replacementParent.toString());
 		System.out.println("Node to replacement: " + replacement.toString());
-		
+
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
 			replacement.setRightChild(replacedNode.getRightChild());
