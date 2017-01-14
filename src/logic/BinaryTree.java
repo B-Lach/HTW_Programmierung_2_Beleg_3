@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * binary tree class
@@ -226,17 +227,17 @@ public class BinaryTree {
 		return root;
 	}
 	
-	public boolean loadTreeFromFile(String stringPath) {
+	public List loadTreeFromFile(String stringPath) {
 		
 		Path path = Paths.get(stringPath);
 		
 		if (Files.isReadable(path)) {
 			try {
-				ArrayList<String> treeArray = new ArrayList<String>();
-				treeArray = (ArrayList<String>) Files.readAllLines(path, ENCODING);
-				System.out.println("loaded array");
-				System.out.println(treeArray.toString());
-				return true;
+				List<String> treeList = new ArrayList<String>();
+				treeList = Files.readAllLines(path, ENCODING);
+				System.out.println("loaded list");
+				System.out.println(treeList.toString());
+				return treeList;
 			} catch (IOException e) {
 				System.out.println("Wasn't able to get content from file");
 				e.printStackTrace();
@@ -244,7 +245,7 @@ public class BinaryTree {
 		} else {
 			System.out.println("The path isn't valid");
 		}
-		return false;
+		return null;
 	}
 
 	public Boolean saveTreeToFile(String stringPath) {
