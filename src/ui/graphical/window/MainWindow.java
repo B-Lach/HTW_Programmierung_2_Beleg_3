@@ -335,10 +335,15 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * Method to handle the delete all action of the JMenuItem
 	 */
 	private void deleteAllAction() {
-		Boolean delete = DialogHandler.showConfirmDialog("Do you really want to delete the tree?", "Delete All");
-		
-		if (delete) {
-			// TODO Call binary tree function to delete all
+		if (tree != null && tree.getRootNode() != null) {
+			Boolean delete = DialogHandler.showConfirmDialog("Do you really want to delete the tree?", "Delete All");
+			
+			if (delete) {
+				tree.deleteAll();
+				treePanel.drawTree(tree);
+			}
+		} else {
+			updateStatus("There is nothing to delete");
 		}
 	}
 	
