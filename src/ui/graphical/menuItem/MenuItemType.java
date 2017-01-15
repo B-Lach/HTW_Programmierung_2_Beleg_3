@@ -11,6 +11,5 @@ public enum MenuItemType {
 	DeleteNode,
 	DeleteAll,
 	
-	CheatSheet,
 	Documentation
 }

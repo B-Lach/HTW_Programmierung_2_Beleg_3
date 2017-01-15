@@ -89,9 +89,6 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		case DeleteAll:
 			deleteAllAction();
 			break;
-		case CheatSheet:
-			cheatSheetAction();
-			break;
 		case Documentation:
 			documentationAction();
 			break;
@@ -214,14 +211,10 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * @return The help menu
 	 */
 	private JMenu getHelpMenu() {
-		JMenuItem cheatSheetItem = new JMenuItem("Cheat Sheet");
-		cheatSheetItem.addActionListener(new MenuItemActionListener(MenuItemType.CheatSheet, this));
-		
 		JMenuItem documentationItem = new JMenuItem("Documentation");
 		documentationItem.addActionListener(new MenuItemActionListener(MenuItemType.Documentation, this));
 		
 		JMenu helpMenu = new JMenu("Help");
-		helpMenu.add(cheatSheetItem);
 		helpMenu.add(documentationItem);
 		
 		return helpMenu;
@@ -371,14 +364,6 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		});
 		timer.setRepeats(false); 
 		timer.start();
-	}
-	
-	/**
-	 * Method to handle the cheat sheet action of the JMenuItem
-	 */
-	private void cheatSheetAction() {
-		System.out.println("Perform Cheat Sheet action");
-		// TODO Add implementation
 	}
 	
 	/**
