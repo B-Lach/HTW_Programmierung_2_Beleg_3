@@ -258,12 +258,22 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * Method to handle the save to action of the JMenuItem
 	 */
 	private void saveToAction() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		
-		int result = fileChooser.showSaveDialog(this);
-		
-		System.out.println("File Chooser Save result: " + result);
+		if (tree != null && tree.getRootNode() != null) {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+			
+			if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+				String path = fileChooser.getSelectedFile().getAbsolutePath();
+				if (tree.saveTreeToFile(path)) {
+					updateStatus("Tree saved sucessfully");
+				} else {
+					updateStatus("Wasn't able to save");
+				}
+			}
+		} else {
+			updateStatus("There is nothing to save");
+		}
 	}
 	
 	/**
