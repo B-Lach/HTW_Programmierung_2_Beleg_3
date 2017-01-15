@@ -1,14 +1,13 @@
+
 package ui.console;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
+
+import logic.BinaryTree;
+import ui.console.input.InputHandler;
+import ui.console.validation.StringValidationType;
+import ui.console.validation.StringValidator;
 
 /**
  * Class for handling the console ui 
@@ -16,10 +15,9 @@ import java.util.Scanner;
  *
  */
 public class ConsoleUI {
-	private final static Scanner scanner = new Scanner(System.in);
 	final static Charset ENCODING = StandardCharsets.UTF_8;
-	// TODO Remove tree array when BinaryTree code is ready - it's just a placeholder
-	private static String[] treeArray;
+
+	private static BinaryTree tree;
 	
 	/**
 	 * Function to present the console ui
@@ -29,7 +27,7 @@ public class ConsoleUI {
 		
 		while (!quit) {
 			showMainMenu();
-			int option = getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole();
 			
 			if (option < 1 || option > 3) {
 				logWrongInput();
@@ -58,17 +56,17 @@ public class ConsoleUI {
 		
 		while(!back) {
 			showIOMenu();
-			int option = getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole();
 			
 			if (option < 1 || option > 5) {
 				logWrongInput();
 			} else {
 				switch (option) {
 				case 1:
-					createTreeFromKeyboard();
+					createTree();
 					break;
 				case 2:
-					createTreeFromFile();
+					loadTreeFromFile();
 					break;
 				case 3:
 					printTreeToConsole();
@@ -87,96 +85,42 @@ public class ConsoleUI {
 	/**
 	 * Function to create a tree from user input
 	 */
-	private static void createTreeFromKeyboard() {
-		System.out.println("******* Create tree ********");
-		System.out.println("write <quit> to stop");
+	private static void createTree() {	
+		tree = new BinaryTree();
 		
-		boolean quit = false;
-		int nodeCount = 0;
-		
-		String[] dataArray = new String[20];
-		
-		while (!quit && nodeCount < 20) {
-			String input = getStringInput();
-			
-			// input is not long enough
-			if (input.length() == 0) {
-				System.out.println("The string have to has at least one character");
-				input = null;
-			// input is to long
-			} else if (input.length() > 3) {
-				// cancel action
-				if (input.equals("quit")) {
-					System.out.println("User wants to quit");
-					quit = true;
-					input = null;
-				// auto shrink if wanted
-				} else {
-					System.out.println("The string is to long. Do you want to auto shring the string to 3 characters? [y/n]");
-					String choice = getStringInput();
-					
-					if (choice.equals("y")) {
-						input = input.substring(0, 3);
-						System.out.println("Shrinked: " + input);
-					} else {
-						input = null;
-					}
-				}
-			}
-			// add new node if valid
-			if (input != null) {
-				dataArray[nodeCount] = input;
-				nodeCount++;
-			}
-		}
-		System.out.println("Stored nodes");
-		// TODO: Init binary tree
-		for (String s:dataArray) {
-			if (s != null) {
-				System.out.println(s);
-			}
-		}
-		treeArray = dataArray;
+		System.out.println("Tree was generated!");
 	}
 	
 	/**
 	 * Function to create tree from file
 	 */
-	private static void createTreeFromFile() {
-		System.out.println("******* Read tree ********");
-		System.out.println("Write path to the file");
-		System.out.println("Write <quit> to cancel");
+	private static void loadTreeFromFile() {
+		System.out.println("******* Load tree ********");
+		System.out.print("Input path to the file you want to load.\n<quit> to cancel:");
 		
-		// TODO replace own code with production when finished
+		// TODO Finalize when logic implemented
+		System.out.println("Under construction\n");
+				
 		// fetch path string from console and commit path to binary tree object for handling
-		String pathString = getStringInput();
-		if (pathString.equals("quit")) { return; }
-		
-		Path path = Paths.get(pathString);
-		
-		if (Files.isReadable(path)) {
-			try {
-				treeArray = new String[20];
-				Files.readAllLines(path, ENCODING).toArray(treeArray);
-			} catch (IOException e) {
-				System.out.println("Wasn't able to get content from file");
-				e.printStackTrace();
-			}
-		} else {
-			System.out.println("The path isn't valid");
-		}
+//		String pathString = getStringInput();
+//		if (pathString.equals("quit")) { return; }
+//		
+//		if (tree == null) { tree = new BinaryTree(); }
+//		if (tree.loadFromFile(pathString)) {
+//			System.out.println("Binary Tree was loaded successfully");
+//		} else {
+//			System.out.println("Failed to load tree from file");
+//		}
 	}
 	
 	/**
 	 * Function to print tree on console
 	 */
 	private static void printTreeToConsole() {
-		// TODO implement logic
-		System.out.println("print to console");
-		if (treeArray != null) {
-			for(String s: treeArray) {
-				if ( s != null && !s.equals("null") ) { System.out.println(s); }
-			}
+		if (tree != null) {
+			tree.printTree();
+		} else {
+			System.out.println("The tree is empty");
 		}
 	}
 	
@@ -184,34 +128,24 @@ public class ConsoleUI {
 	 * Function to save tree to file
 	 */
 	private static void saveTreeToFile() {
-		System.out.println("save to file");
-		// TODO replace own code with production when finished
-		// fetch path string from console commit path to binary tree object for handling 
-		Path storePath = Paths.get("/Coding/test.txt");
-		System.out.println("Path to file: " + storePath);
-		
-		if(!Files.isWritable(storePath)) {
-			try {
-				Files.createFile(storePath);
-			} catch (IOException e) {
-				System.out.println("Failed to create file:\n" + e);
-				e.printStackTrace();
-				return;
-			}
+		if(tree == null) {
+			System.out.println("There is nothing to save!");
+			return;
+		} else {
+			// TODO Finalize when logic implemented
+			System.out.println("****** Save to file ******");
+			System.out.print("Input path to the file <quit> to cancel:");
+			
+			System.out.println("Under construction");
+//			String pathString = InputHandler.getStringInput();
+//			if (!pathString.equals("quit")) {
+//				if (tree.loadFromFile(pathString)) {
+//					System.out.println("Tree was saved successfully");
+//				} else {
+//					System.out.println("Failed to save tree to file");
+//				}
+//			}
 		}
-		
-		try {
-			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
-			for (String s:treeArray) {
-				writer.println(s);
-			}
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("Failed to create FileWriter: " + e);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// TODO implement logic
 	}
 	
 	/**
@@ -222,7 +156,7 @@ public class ConsoleUI {
 		
 		while(!back) {
 			showManipulationMenu();
-			int option = getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole();
 			
 			if (option < 1 || option > 4) {
 				logWrongInput();
@@ -232,7 +166,7 @@ public class ConsoleUI {
 					addNode();
 					break;
 				case 2:
-					removeNodeByIndex();
+					deleteNode();
 					break;
 				case 3:
 					deleteTree();
@@ -249,25 +183,67 @@ public class ConsoleUI {
 	 * Function to add a node to the tree
 	 */
 	private static void addNode() {
-		// TODO implement logic
-		System.out.println("Add node");
+		System.out.println("******** Add node ********");
+		if (tree == null ) { tree = new BinaryTree();}
+		System.out.print("Type the data you want to add\n<quit> to cancel:");
+		String input = InputHandler.getStringInput();
+		
+		StringValidationType validation = StringValidator.validateString(input, "quit", true);
+		
+		if(validation == StringValidationType.ShrinkInput) {
+			input = input.substring(0, 3);
+			validation = StringValidationType.Correct;
+		}
+		if (validation == StringValidationType.Correct) {
+			if (tree.addNode(input)) {
+				System.out.println("Node with String <" + input + "> was added successfully");
+			} else {
+				System.out.println("Node with String <" + input + "> is already part of the tree");
+			}
+		}
 	}
 	
 	/**
 	 * Function to remove a node from tree
 	 */
-	private static void removeNodeByIndex() {
+	private static void deleteNode() {
 		// TODO implement logic
-		System.out.println("Remove node by index");
+		System.out.println("****** Remove node *******");
+		
+		if (tree == null) {
+			System.out.println("There is nothing to delete");
+			return;
+		}
+		System.out.print("Type the data you want to delete\n<quit> to cancel:");
+		String input = InputHandler.getStringInput();
+		
+		StringValidationType validation = StringValidator.validateString(input, "quit", false);
+		if (validation == StringValidationType.Correct) {
+			if (tree.deleteNode(input)) {
+				System.out.println("Node with String <" + input + "> was deleted.");
+			} else {
+				System.out.println("Node with String <" + input + "> was not found.");
+			}
+		} else if (validation != StringValidationType.CancelSequence) {
+			System.out.println("Given input is not valid.");
+		}
 	}
 	
 	/**
 	 * Function to delete the whole tree
 	 */
 	private static void deleteTree() {
-		System.out.println("Delete tree");
-		// TODO implement logic
+		if (tree != null) {
+			System.out.println("****** Delete tree *******");
+			if(InputHandler.getBooleanInput("Do you want to delete the tree? [y/n]", "y")){
+				tree.deleteAll();
+				System.out.println("Tree was deleted");
+			}
+		} else {
+			System.out.println("There is nothing to delete");
+		}
 	}
+	
 	
 	// Console output stuff
 	/**
@@ -289,7 +265,7 @@ public class ConsoleUI {
 	private static void showIOMenu() {
 		System.out.println("****** Input / Output ******");
 		System.out.println("*                          *");
-		System.out.println("* 1. Create from keyboard  *");
+		System.out.println("* 1. Create                *");
 		System.out.println("* 2. Create from file      *");
 		System.out.println("* 3. Print to console      *");
 		System.out.println("* 4. Save to file          *");
@@ -305,7 +281,7 @@ public class ConsoleUI {
 		System.out.println("******* Manipulation *******");
 		System.out.println("*                          *");
 		System.out.println("* 1. Add node              *");
-		System.out.println("* 2. Remove node by index  *");
+		System.out.println("* 2. Delete node           *");
 		System.out.println("* 3. Delete tree           *");
 		System.out.println("* 4. Back                  *");
 		System.out.println("*                          *");
@@ -317,40 +293,5 @@ public class ConsoleUI {
 	 */
 	private static void logWrongInput() {
 		System.out.println("Wrong input. Please try again!\n");
-	}
-	
-	/**
-	 * Function to get user selection from console
-	 * @return The selection by the user
-	 */
-	private static int getSelectionFromConsole() {
-		System.out.println("Select option:");
-		return getIntInput();
-	}
-	
-	/**
-	 * Function to get an integer input from console
-	 * @return The input made by the user
-	 */
-	private static int getIntInput() {
-		int option = -1;
-		// Workaround for scanner.nextInt()
-		// See: http://stackoverflow.com/questions/13102045/scanner-is-skipping-nextline-after-using-next-nextint-or-other-nextfoo
-		try {
-			option = Integer.parseInt(scanner.nextLine());
-		} catch(Exception e) {
-	
-		}
-		return option;
-	}
-	
-	/**
-	 * Function to get a string input from console
-	 * @return The input made by the user
-	 */
-	private static String getStringInput() {
-		String input = scanner.nextLine();
-		
-		return input;
 	}
 }
