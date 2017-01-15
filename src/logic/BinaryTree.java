@@ -1,5 +1,18 @@
 package logic;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.OutputStreamWriter;
+
 /**
  * binary tree class
  * 
@@ -8,7 +21,32 @@ package logic;
  */
 public class BinaryTree {
 
+	public static void main(String[] args) {
+
+		BinaryTree theTree = new BinaryTree();
+
+		theTree.addNode("50");
+		theTree.addNode("25");
+		theTree.addNode("15");
+		theTree.addNode("30");
+		theTree.addNode("75");
+		theTree.addNode("85");
+
+		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
+		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
+	}
+
 	private Node root;
+	final static Charset ENCODING = StandardCharsets.UTF_8;
+	private String stringPath;
+	
+	public void setStringPath(String path){
+		stringPath = path;
+	}
+	
+	public String getStringPath(){
+		return stringPath;
+	}
 
 	public Boolean addNode(String data) {
 
@@ -73,6 +111,14 @@ public class BinaryTree {
 		}
 	}
 
+	public boolean deleteAll() {
+		root = null;
+		if (root == null) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * delete method for nodes
 	 * 
@@ -107,7 +153,7 @@ public class BinaryTree {
 					return false;
 				}
 			}
-
+			// leaf node
 			if (focusNode.getLeftChild() == null && focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -117,6 +163,7 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(null);
 				}
+				// only left child
 			} else if (focusNode.getRightChild() == null) {
 
 				if (focusNode == root) {
@@ -126,14 +173,16 @@ public class BinaryTree {
 				} else {
 					parent.setRightChild(focusNode.getLeftChild());
 				}
+				// only right child
 			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
 					root = focusNode.getRightChild();
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getRightChild());
 				} else {
-					parent.setRightChild(focusNode.getLeftChild());
+					parent.setRightChild(focusNode.getRightChild());
 				}
+				// left and right child
 			} else {
 				Node replacement = getReplacementNode(focusNode);
 
@@ -179,22 +228,81 @@ public class BinaryTree {
 		return root;
 	}
 	
-	public void preorderTraverseTree(Node focusNode) {
-		if (focusNode != null) {
-
-			System.out.println(focusNode);
-
-			preorderTraverseTree(focusNode.getLeftChild());
-
-			preorderTraverseTree(focusNode.getRightChild());
+	public List loadTreeFromFile(String stringPath) {
+		
+		Path path = Paths.get(stringPath);
+		
+		if (Files.isReadable(path)) {
+			try {
+				List<String> treeList = new ArrayList<String>();
+				treeList = Files.readAllLines(path, ENCODING);
+				System.out.println("loaded list");
+				System.out.println(treeList.toString());
+				return treeList;
+			} catch (IOException e) {
+				System.out.println("Wasn't able to get content from file");
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("The path isn't valid");
 		}
+		return null;
+	}
+
+	public Boolean saveTreeToFile(String stringPath) {
+		Node focusNode = root;
+
+		ArrayList<String> treeArray = new ArrayList<String>();
+		preorderTraverseTree(focusNode, treeArray);
+
+
+		System.out.println(treeArray.toString());
+		System.out.println("save to file");
+		// TODO replace own code with production when finished
+		// fetch path string from console commit path to binary tree object for
+		// handling
+
+		Path storePath = Paths.get(stringPath);
+		System.out.println("Path to file: " + storePath);
+
+		if (!Files.isWritable(storePath)) {
+			try {
+				Files.createFile(storePath);
+			} catch (IOException e) {
+				System.out.println("Failed to create file:\n" + e);
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		try {
+			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
+			for (String s : treeArray) {
+				writer.println(s);
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Failed to create FileWriter: " + e);
+
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
+		if (focusNode != null && list != null) {
+			list.add(focusNode.getData());
+			preorderTraverseTree(focusNode.getLeftChild(), list);
+
+			preorderTraverseTree(focusNode.getRightChild(), list);
+		}
+		System.out.println(list.toString());
 	}
 
 	private Node getReplacementNode(Node replacedNode) {
-
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
-
 		Node focusNode = replacedNode.getRightChild();
 
 		while (focusNode != null) {
@@ -203,10 +311,89 @@ public class BinaryTree {
 			focusNode = focusNode.getLeftChild();
 		}
 
+
+		System.out.println("Node to replace: " + replacedNode.toString());
+		System.out.println("Node to replacement parent: " + replacementParent.toString());
+		System.out.println("Node to replacement: " + replacement.toString());
+
+
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
 			replacement.setRightChild(replacedNode.getRightChild());
 		}
 		return replacement;
 	}
+	
+	/**
+	 * Method to print the tree on console
+	 * Inspired by http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram
+	 */
+	public void printTree() {
+		System.out.println("\n\n\n");
+		// empty tree found
+		if (root == null) {
+        	System.out.println("Tree is empty");
+        } else {
+        	OutputStreamWriter writer = new OutputStreamWriter(System.out);
+        	
+        	if (root.getRightChild() != null) {
+            	printTree(writer, root.getRightChild(), true, "");
+            }
+            printNodeValue(writer, root);
+            if (root.getLeftChild() != null) {
+                printTree(writer, root.getLeftChild(), false, "");
+            }
+        }
+        System.out.println("\n\n\n");
+	}
+    
+    // use string and not stringbuffer on purpose as we need to change the indent at each recursion
+	/**
+	 * Private Method to print the tree on console using an OutputStreamWriter
+	 * @param writer The OutputStreamWriter object to use
+	 * @param root The current root node to print
+	 * @param isRight Boolean value to identify if the current node is right child 
+	 * @param indent The current indent string
+	 */
+    private void printTree(OutputStreamWriter writer, Node root, boolean isRight, String indent) {
+        // right child not null
+    	if (root.getRightChild() != null) {
+        	printTree(writer, root.getRightChild(), true, indent + (isRight ? "        " : " |      "));
+        }
+    	// write current node
+        try {
+        	writer.write(indent);
+            if (isRight) {
+                writer.write(" /");
+            } else {
+                writer.write(" \\");
+            }
+            writer.write("----- ");
+            writer.flush();
+        } catch (Exception e) {}
+        
+        printNodeValue(writer, root);
+        // left child not null
+        if (root.getLeftChild() != null) {
+            printTree(writer, root.getLeftChild(), false, indent + (isRight ? " |      " : "        "));
+        }
+    }
+    
+    /**
+     * Private method to print a node's value to an OutputStreamWriter
+     * @param out The OutputStreamWriter to use
+     * @param node The node to print
+     */
+    private void printNodeValue(OutputStreamWriter out, Node node) {
+    	try {
+    		// node is null
+    		if (node == null) {
+                out.write("<null>");
+            } else {
+                out.write(node.getData());
+            }
+            out.write('\n');
+            out.flush();
+    	} catch (Exception e) {}
+    }
 }
