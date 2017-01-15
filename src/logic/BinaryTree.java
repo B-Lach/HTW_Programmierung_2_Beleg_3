@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.OutputStreamWriter;
 
 /**
  * binary tree class
@@ -322,4 +323,77 @@ public class BinaryTree {
 		}
 		return replacement;
 	}
+	
+	/**
+	 * Method to print the tree on console
+	 * Inspired by http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram
+	 */
+	public void printTree() {
+		System.out.println("\n\n\n");
+		// empty tree found
+		if (root == null) {
+        	System.out.println("Tree is empty");
+        } else {
+        	OutputStreamWriter writer = new OutputStreamWriter(System.out);
+        	
+        	if (root.getRightChild() != null) {
+            	printTree(writer, root.getRightChild(), true, "");
+            }
+            printNodeValue(writer, root);
+            if (root.getLeftChild() != null) {
+                printTree(writer, root.getLeftChild(), false, "");
+            }
+        }
+        System.out.println("\n\n\n");
+	}
+    
+    // use string and not stringbuffer on purpose as we need to change the indent at each recursion
+	/**
+	 * Private Method to print the tree on console using an OutputStreamWriter
+	 * @param writer The OutputStreamWriter object to use
+	 * @param root The current root node to print
+	 * @param isRight Boolean value to identify if the current node is right child 
+	 * @param indent The current indent string
+	 */
+    private void printTree(OutputStreamWriter writer, Node root, boolean isRight, String indent) {
+        // right child not null
+    	if (root.getRightChild() != null) {
+        	printTree(writer, root.getRightChild(), true, indent + (isRight ? "        " : " |      "));
+        }
+    	// write current node
+        try {
+        	writer.write(indent);
+            if (isRight) {
+                writer.write(" /");
+            } else {
+                writer.write(" \\");
+            }
+            writer.write("----- ");
+            writer.flush();
+        } catch (Exception e) {}
+        
+        printNodeValue(writer, root);
+        // left child not null
+        if (root.getLeftChild() != null) {
+            printTree(writer, root.getLeftChild(), false, indent + (isRight ? " |      " : "        "));
+        }
+    }
+    
+    /**
+     * Private method to print a node's value to an OutputStreamWriter
+     * @param out The OutputStreamWriter to use
+     * @param node The node to print
+     */
+    private void printNodeValue(OutputStreamWriter out, Node node) {
+    	try {
+    		// node is null
+    		if (node == null) {
+                out.write("<null>");
+            } else {
+                out.write(node.getData());
+            }
+            out.write('\n');
+            out.flush();
+    	} catch (Exception e) {}
+    }
 }
