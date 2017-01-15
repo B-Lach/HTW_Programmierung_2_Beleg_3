@@ -1,3 +1,4 @@
+
 package ui.console;
 
 import java.nio.charset.Charset;
@@ -116,31 +117,35 @@ public class ConsoleUI {
 	 * Function to print tree on console
 	 */
 	private static void printTreeToConsole() {
-		// TODO implement logic
-		System.out.println("Under construction\n");
+		if (tree != null) {
+			tree.printTree();
+		} else {
+			System.out.println("The tree is empty");
+		}
 	}
 	
 	/**
 	 * Function to save tree to file
 	 */
 	private static void saveTreeToFile() {
-		// TODO Finalize when logic implemented
-		System.out.println("****** Save to file ******");
-		System.out.print("Input path to the file <quit> to cancel:");
-		
 		if(tree == null) {
 			System.out.println("There is nothing to save!");
 			return;
-		}
-		System.out.println("Under construction");
-//		String pathString = InputHandler.getStringInput();
-//		if (!pathString.equals("quit")) {
-//			if (tree.loadFromFile(pathString)) {
-//				System.out.println("Tree was saved successfully");
-//			} else {
-//				System.out.println("Failed to save tree to file");
+		} else {
+			// TODO Finalize when logic implemented
+			System.out.println("****** Save to file ******");
+			System.out.print("Input path to the file <quit> to cancel:");
+			
+			System.out.println("Under construction");
+//			String pathString = InputHandler.getStringInput();
+//			if (!pathString.equals("quit")) {
+//				if (tree.loadFromFile(pathString)) {
+//					System.out.println("Tree was saved successfully");
+//				} else {
+//					System.out.println("Failed to save tree to file");
+//				}
 //			}
-//		}
+		}
 	}
 	
 	/**
@@ -228,11 +233,14 @@ public class ConsoleUI {
 	 * Function to delete the whole tree
 	 */
 	private static void deleteTree() {
-		System.out.println("****** Delete tree *******");
-		if(InputHandler.getBooleanInput("Do you want to delete the tree? [y/n]", "y")){
-			// TODO implement logic
-			System.out.println("Under construction");
-//			tree.deleteAll();
+		if (tree != null) {
+			System.out.println("****** Delete tree *******");
+			if(InputHandler.getBooleanInput("Do you want to delete the tree? [y/n]", "y")){
+				tree.deleteAll();
+				System.out.println("Tree was deleted");
+			}
+		} else {
+			System.out.println("There is nothing to delete");
 		}
 	}
 	
