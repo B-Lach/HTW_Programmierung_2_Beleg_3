@@ -228,25 +228,26 @@ public class BinaryTree {
 		return root;
 	}
 	
-	public List loadTreeFromFile(String stringPath) {
-		
+	public Boolean loadTreeFromFile(String stringPath) {
 		Path path = Paths.get(stringPath);
 		
 		if (Files.isReadable(path)) {
 			try {
-				List<String> treeList = new ArrayList<String>();
-				treeList = Files.readAllLines(path, ENCODING);
-				System.out.println("loaded list");
-				System.out.println(treeList.toString());
-				return treeList;
+				// fetch data as List<String> from file
+				List<String> treeList = Files.readAllLines(path, ENCODING);
+				// clear current stored hierarchy 
+				deleteAll();
+				// create new tree
+				for(String data: treeList) {
+					addNode(data);
+				}
+				return true;
 			} catch (IOException e) {
-				System.out.println("Wasn't able to get content from file");
-				e.printStackTrace();
+				return false;
 			}
 		} else {
-			System.out.println("The path isn't valid");
+			return false;
 		}
-		return null;
 	}
 
 	public Boolean saveTreeToFile(String stringPath) {
