@@ -98,19 +98,17 @@ public class ConsoleUI {
 		System.out.println("******* Load tree ********");
 		System.out.print("Input path to the file you want to load.\n<quit> to cancel:");
 		
-		// TODO Finalize when logic implemented
-		System.out.println("Under construction\n");
 				
 		// fetch path string from console and commit path to binary tree object for handling
-//		String pathString = getStringInput();
-//		if (pathString.equals("quit")) { return; }
-//		
-//		if (tree == null) { tree = new BinaryTree(); }
-//		if (tree.loadFromFile(pathString)) {
-//			System.out.println("Binary Tree was loaded successfully");
-//		} else {
-//			System.out.println("Failed to load tree from file");
-//		}
+		String pathString = InputHandler.getStringInput();
+		if (pathString.equals("quit")) { return; }
+		
+		if (tree == null) { tree = new BinaryTree(); }
+		if (tree.loadTreeFromFile(pathString)) {
+			System.out.println("Binary Tree was loaded successfully");
+		} else {
+			System.out.println("Failed to load tree from file");
+		}
 	}
 	
 	/**
