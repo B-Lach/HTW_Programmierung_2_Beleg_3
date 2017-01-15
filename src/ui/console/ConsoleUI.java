@@ -128,23 +128,22 @@ public class ConsoleUI {
 	 * Function to save tree to file
 	 */
 	private static void saveTreeToFile() {
-		if(tree == null) {
+		if(tree == null || tree.getRootNode() == null) {
 			System.out.println("There is nothing to save!");
 			return;
 		} else {
-			// TODO Finalize when logic implemented
 			System.out.println("****** Save to file ******");
-			System.out.print("Input path to the file <quit> to cancel:");
+			System.out.print("Input path to the file\n<quit> to cancel:");
 			
-			System.out.println("Under construction");
-//			String pathString = InputHandler.getStringInput();
-//			if (!pathString.equals("quit")) {
-//				if (tree.loadFromFile(pathString)) {
-//					System.out.println("Tree was saved successfully");
-//				} else {
-//					System.out.println("Failed to save tree to file");
-//				}
-//			}
+			String pathString = InputHandler.getStringInput();
+			
+			if (!pathString.equals("quit")) {
+				if (tree.saveTreeToFile(pathString)) {
+					System.out.println("Tree saved sucessfully");
+				} else {
+					System.out.println("Wasn't able to save");
+				}
+			}
 		}
 	}
 	
