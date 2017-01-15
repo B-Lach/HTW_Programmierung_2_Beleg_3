@@ -242,9 +242,16 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		
-		int result = fileChooser.showOpenDialog(this);
-		System.out.println("File Chooser result: " + result);
-		// TODO implement logic to init tree from file
+		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			String pathString = fileChooser.getSelectedFile().getAbsolutePath();
+			if (tree == null) { tree = new BinaryTree();}
+			
+			if (tree.loadTreeFromFile(pathString)) {
+				treePanel.drawTree(tree);
+			} else {
+				updateStatus("Can not load tree from " + pathString);
+			}
+		}
 	}
 	
 	/**
