@@ -40,6 +40,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private TreePanel treePanel;
 	private BinaryTree tree; 
 	
+	private JMenuItem saveItem;
 	private Timer timer;
 	
 	/**
@@ -132,7 +133,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 */
 	private JMenu getFileMenu() {
 		// On macOS we are using CMD, on Windows people are using CTRL 
-		// Instead of InputEvent.SHIFT_MASK what always is CTRL we are using
+		// Instead of InputEvent.CTRL_MASK what always is CTRL we are using
 		// ShortcutKeyMask to respect the different keys on macOS and Windows
 		int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
@@ -146,7 +147,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		// CTRL+O shortcut
 		newFromFileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ctrl));
 		
-		JMenuItem saveItem = new JMenuItem("Save");
+		saveItem = new JMenuItem("Save");
 		saveItem.addActionListener(new MenuItemActionListener(MenuItemType.Save, this));
 		// CTRL+S
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ctrl));
@@ -226,6 +227,8 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private void newAction() {
 		tree = new BinaryTree();
 		treePanel.drawTree(tree);
+		
+		updateSaveItemUsable();
 	}
 	
 	/**
@@ -241,6 +244,8 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 			
 			if (tree.loadTreeFromFile(pathString)) {
 				treePanel.drawTree(tree);
+				
+				updateSaveItemUsable();
 			} else {
 				updateStatus("Can not load tree from " + pathString);
 			}
@@ -248,10 +253,26 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	}
 	
 	/**
+	 * Method to update the save item usage
+	 */
+	private void updateSaveItemUsable() {
+		saveItem.setEnabled(tree.getStringPath() != null);
+	}
+	/**
 	 * Method to handle the save action of the JMenuItem
 	 */
 	private void saveAction() {
-		System.out.println("Perform Save action");
+		if (tree != null && tree.getStringPath() != null) {
+			if (tree.saveTreeToFile(tree.getStringPath())) {
+				updateStatus("Tree saved sucessfully");
+			} else {
+				updateStatus("Wasn't able to save");
+			}
+			updateSaveItemUsable();
+		} else {
+			// This line of code shouldn't be executed at any time
+			updateStatus("Wasn't able to save");
+		}
 	}
 	
 	/**
@@ -270,6 +291,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 				} else {
 					updateStatus("Wasn't able to save");
 				}
+				updateSaveItemUsable();
 			}
 		} else {
 			updateStatus("There is nothing to save");
