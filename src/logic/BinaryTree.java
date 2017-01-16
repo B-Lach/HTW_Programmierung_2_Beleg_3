@@ -40,10 +40,10 @@ public class BinaryTree {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 	private String stringPath;
 	
-	public void setStringPath(String path){
-		stringPath = path;
-	}
-	
+	/**
+	 * Method to get the current path of the used file
+	 * @return The path to the current used file. Is null, if there is no path available
+	 */
 	public String getStringPath(){
 		return stringPath;
 	}
@@ -241,6 +241,9 @@ public class BinaryTree {
 				for(String data: treeList) {
 					addNode(data);
 				}
+				// store the current used path to be able to save to that file in the future again
+				this.stringPath = stringPath;
+				
 				return true;
 			} catch (IOException e) {
 				return false;
@@ -255,22 +258,12 @@ public class BinaryTree {
 
 		ArrayList<String> treeArray = new ArrayList<String>();
 		preorderTraverseTree(focusNode, treeArray);
-
-
-		System.out.println(treeArray.toString());
-		System.out.println("save to file");
-		// TODO replace own code with production when finished
-		// fetch path string from console commit path to binary tree object for
-		// handling
-
 		Path storePath = Paths.get(stringPath);
-		System.out.println("Path to file: " + storePath);
 
 		if (!Files.isWritable(storePath)) {
 			try {
 				Files.createFile(storePath);
 			} catch (IOException e) {
-				System.out.println("Failed to create file:\n" + e);
 				e.printStackTrace();
 				return false;
 			}
@@ -282,6 +275,8 @@ public class BinaryTree {
 				writer.println(s);
 			}
 			writer.close();
+			// store the current used path to be able to save to that file in the future again
+			this.stringPath = stringPath;
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
 
@@ -311,12 +306,6 @@ public class BinaryTree {
 			replacement = focusNode;
 			focusNode = focusNode.getLeftChild();
 		}
-
-
-		System.out.println("Node to replace: " + replacedNode.toString());
-		System.out.println("Node to replacement parent: " + replacementParent.toString());
-		System.out.println("Node to replacement: " + replacement.toString());
-
 
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
