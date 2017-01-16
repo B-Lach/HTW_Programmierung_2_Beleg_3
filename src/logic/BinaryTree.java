@@ -20,24 +20,26 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
-
-	public static void main(String[] args) {
-
-		BinaryTree theTree = new BinaryTree();
-
-		theTree.addNode("50");
-		theTree.addNode("25");
-		theTree.addNode("15");
-		theTree.addNode("30");
-		theTree.addNode("75");
-		theTree.addNode("85");
-
-		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
-		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
-	}
+//
+//	public static void main(String[] args) {
+//
+//		BinaryTree theTree = new BinaryTree();
+//
+//		theTree.addNode("50");
+//		theTree.addNode("25");
+//		theTree.addNode("15");
+//		theTree.addNode("30");
+//		theTree.addNode("75");
+//		theTree.addNode("85");
+//
+//		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
+//		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
+//	}
 
 	private Node root;
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	public final static String FILE_EXTENSION = "btv";
+	
 	private String stringPath;
 	
 	/**
@@ -229,31 +231,41 @@ public class BinaryTree {
 	}
 	
 	public Boolean loadTreeFromFile(String stringPath) {
-		Path path = Paths.get(stringPath);
-		
-		if (Files.isReadable(path)) {
-			try {
-				// fetch data as List<String> from file
-				List<String> treeList = Files.readAllLines(path, ENCODING);
-				// clear current stored hierarchy 
-				deleteAll();
-				// create new tree
-				for(String data: treeList) {
-					addNode(data);
+		// check if the file to load is valid
+		if(pathIsValid(stringPath)) {
+			Path path = Paths.get(stringPath);
+			
+			if (Files.isReadable(path)) {
+				try {
+					// fetch data as List<String> from file
+					List<String> treeList = Files.readAllLines(path, ENCODING);
+					// validate content
+					if (validateFileContent(treeList)) {
+						// clear current stored hierarchy 
+						deleteAll();
+						// create new tree
+						for(String data: treeList) {
+							addNode(data);
+						}
+						// store the current used path to be able to save to that file in the future again
+						this.stringPath = stringPath;
+
+						return true;
+					}
+				} catch (IOException e) {
+					return false;
 				}
-				// store the current used path to be able to save to that file in the future again
-				this.stringPath = stringPath;
-				
-				return true;
-			} catch (IOException e) {
-				return false;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	public Boolean saveTreeToFile(String stringPath) {
+		// check if the given path is valid
+		// if it isn't add the valid file extension
+		if(!pathIsValid(stringPath)) {
+			stringPath = addValidFileExtension(stringPath);
+		}
 		Node focusNode = root;
 
 		ArrayList<String> treeArray = new ArrayList<String>();
@@ -285,8 +297,39 @@ public class BinaryTree {
 		}
 		return true;
 	}
-
-	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
+	
+	/**
+	 * Method to check if a given string is a valid file path
+	 * @param path The path to check
+	 * @return True if the path is valid. Otherwise false
+	 */
+	private Boolean pathIsValid(String path) {
+		return path.endsWith("." + FILE_EXTENSION);
+	}
+	
+	/**
+	 * Method to add a valid file extension to a given path
+	 * @param path The path to add the file extension
+	 * @return The path with valid extension
+	 */
+	private String addValidFileExtension(String path) {	
+		return path += "." + FILE_EXTENSION;
+	}
+	
+	/**
+	 * Method to validate content of a loaded file
+	 * @param content The content to validate
+	 * @return True if content is valid. Otherwise false
+	 */
+	private Boolean validateFileContent(List<String> content) {
+		for(String s: content) {
+			if (s.length() < 1 || s.length() > 3) {
+				return false;
+			}
+		}
+		return true;
+	}
+ 	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
 			preorderTraverseTree(focusNode.getLeftChild(), list);

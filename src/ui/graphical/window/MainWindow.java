@@ -16,6 +16,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ui.graphical.dialog.DialogHandler;
 import ui.graphical.menuItem.MenuItemActionListener;
@@ -237,6 +238,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	private void newFromFileAction() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		setFileFilter(fileChooser);
 		
 		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			String pathString = fileChooser.getSelectedFile().getAbsolutePath();
@@ -283,6 +285,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		if (tree != null && tree.getRootNode() != null) {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+			setFileFilter(fileChooser);
 			
 			if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 				String path = fileChooser.getSelectedFile().getAbsolutePath();
@@ -298,6 +301,17 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		}
 	}
 	
+	/**
+	 * Method to set accepted file filters for a specific file chooser
+	 * @param chooser The file chooser to set the filters for
+	 */
+	private void setFileFilter(JFileChooser chooser) {
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("*." + BinaryTree.FILE_EXTENSION, BinaryTree.FILE_EXTENSION);
+		// remove the all files filter
+		chooser.setAcceptAllFileFilterUsed(false);
+		// add the BinaryTree file extension filter
+		chooser.setFileFilter(filter);
+	}
 	/**
 	 * Method to handle the quit action of the JMenuItem
 	 */
