@@ -265,7 +265,6 @@ public class BinaryTree {
 		if(!pathIsValid(stringPath)) {
 			stringPath = addValidFileExtension(stringPath);
 		}
-		System.out.println("Path after check: " + stringPath);
 		Node focusNode = root;
 
 		ArrayList<String> treeArray = new ArrayList<String>();
