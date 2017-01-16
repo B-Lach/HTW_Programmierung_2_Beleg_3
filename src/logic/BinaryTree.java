@@ -20,24 +20,26 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
-
-	public static void main(String[] args) {
-
-		BinaryTree theTree = new BinaryTree();
-
-		theTree.addNode("50");
-		theTree.addNode("25");
-		theTree.addNode("15");
-		theTree.addNode("30");
-		theTree.addNode("75");
-		theTree.addNode("85");
-
-		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
-		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
-	}
+//
+//	public static void main(String[] args) {
+//
+//		BinaryTree theTree = new BinaryTree();
+//
+//		theTree.addNode("50");
+//		theTree.addNode("25");
+//		theTree.addNode("15");
+//		theTree.addNode("30");
+//		theTree.addNode("75");
+//		theTree.addNode("85");
+//
+//		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
+//		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
+//	}
 
 	private Node root;
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	public final static String FILE_EXTENSION = "btv";
+	
 	private String stringPath;
 	
 	/**
@@ -229,6 +231,10 @@ public class BinaryTree {
 	}
 	
 	public Boolean loadTreeFromFile(String stringPath) {
+		// check if the file to load is valid
+		if(!pathIsValid(stringPath)) {
+			return false;
+		}
 		Path path = Paths.get(stringPath);
 		
 		if (Files.isReadable(path)) {
@@ -254,6 +260,12 @@ public class BinaryTree {
 	}
 
 	public Boolean saveTreeToFile(String stringPath) {
+		// check if the given path is valid
+		// if it isn't add the valid file extension
+		if(!pathIsValid(stringPath)) {
+			stringPath = addValidFileExtension(stringPath);
+		}
+		System.out.println("Path after check: " + stringPath);
 		Node focusNode = root;
 
 		ArrayList<String> treeArray = new ArrayList<String>();
@@ -285,7 +297,25 @@ public class BinaryTree {
 		}
 		return true;
 	}
-
+	
+	/**
+	 * Method to check if a given string is a valid file path
+	 * @param path The path to check
+	 * @return True if the path is valid. Otherwise false
+	 */
+	private Boolean pathIsValid(String path) {
+		return path.endsWith("." + FILE_EXTENSION);
+	}
+	
+	/**
+	 * Method to add a valid file extension to a given path
+	 * @param path The path to add the file extension
+	 * @return The path with valid extension
+	 */
+	private String addValidFileExtension(String path) {	
+		return path += "." + FILE_EXTENSION;
+	}
+	
 	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
