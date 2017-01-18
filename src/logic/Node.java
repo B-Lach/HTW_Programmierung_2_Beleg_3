@@ -1,5 +1,9 @@
 package logic;
-
+/**
+ * class for binary tree node object
+ * @author Rico Stucke
+ *
+ */
 public class Node {
 
 	private String data;
@@ -7,6 +11,10 @@ public class Node {
 	private Node leftChild;
 	private Node rightChild;
 	
+	/**
+	 * constructor for binary tree node
+	 * @param data value of the node
+	 */
 	public Node(String data){
 		this.data = data;
 	}
@@ -29,11 +37,16 @@ public class Node {
 	public Node getRightChild() {
 		return rightChild;
 	}
-	
+	/**
+	 * getter for node values
+	 * @return returns node value
+	 */
 	public String getData() {
 		return data;
 	}
-	
+	/**
+	 * print method for node values
+	 */
 	public String toString(){
 		return data;
 	}
