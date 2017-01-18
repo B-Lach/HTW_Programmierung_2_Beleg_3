@@ -401,7 +401,6 @@ public class BinaryTree {
 
 			preorderTraverseTree(focusNode.getRightChild(), list);
 		}
-		System.out.println(list.toString());
 	}
 
 	/**
