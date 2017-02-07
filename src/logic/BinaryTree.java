@@ -61,13 +61,14 @@ public class BinaryTree {
 		if (root == null) {
 
 			root = newNode;
+			newNode.setHeight(1);
 			return true;
 		} else {
 
 			// sets root as starting point for traversing the tree
 			Node focusNode = root;
 
-			// future partent for new node
+			// future parent for new node
 			Node parent;
 
 			while (true) {
@@ -87,6 +88,8 @@ public class BinaryTree {
 
 						// places new node on the left
 						parent.setLeftChild(newNode);
+						newNode.setParentNode(parent);
+						newNode.setHeight(parent.getHeight() + 1);
 						return true;
 					}
 				} else if (data.compareTo(focusNode.getData()) > 0) {
@@ -97,8 +100,10 @@ public class BinaryTree {
 					// if right child has no children
 					if (focusNode == null) {
 
-						// place new ndoe on the right
+						// place new node on the right
 						parent.setRightChild(newNode);
+						newNode.setParentNode(parent);
+						newNode.setHeight(parent.getHeight() + 1);
 						return true;
 					}
 
@@ -197,6 +202,8 @@ public class BinaryTree {
 				}
 				replacement.setLeftChild(focusNode.getLeftChild());
 			}
+			adjustParameters(root);
+			
 			return true;
 		}
 		System.out.println("delete: node not found");
@@ -297,6 +304,13 @@ public class BinaryTree {
 		}
 		return true;
 	}
+	public boolean avlSort(){
+		ArrayList<String> treeArray = new ArrayList<String>();
+		Node focusNode = root;
+		preorderTraverseTree(focusNode, treeArray);
+		
+		return true;
+	}
 	
 	/**
 	 * Method to check if a given string is a valid file path
@@ -338,6 +352,40 @@ public class BinaryTree {
 		}
 		System.out.println(list.toString());
 	}
+ 	/**
+ 	 * private method for adjusting height and parentNode variables after a deletion was succesful in the BST
+ 	 * @param focusNode root node of the BST
+ 	 */
+ 	private void adjustParameters(Node focusNode){
+ 		if(focusNode != null){
+ 			try{
+ 				adjustParameters(focusNode.getLeftChild());
+ 			}finally{
+ 				if (focusNode.getLeftChild() != null) {
+ 					if(focusNode.getLeftChild().getHeight() != (focusNode.getHeight() + 1)){
+ 	 					focusNode.getLeftChild().setHeight(focusNode.getHeight() + 1);
+ 	 				}
+ 	 				if(focusNode.getLeftChild().getParentNode() != focusNode){
+ 	 					focusNode.getLeftChild().setParentNode(focusNode);
+ 	 				}
+ 				}
+ 				
+ 			}
+ 			try{
+ 				adjustParameters(focusNode.getRightChild());
+ 			}finally{
+ 				if (focusNode.getRightChild() != null) {
+ 					if(focusNode.getRightChild().getHeight() != (focusNode.getHeight() + 1)){
+ 	 					focusNode.getRightChild().setHeight(focusNode.getHeight() + 1);
+ 	 				}
+ 	 				if(focusNode.getRightChild().getParentNode() != focusNode){
+ 	 					focusNode.getRightChild().setParentNode(focusNode);
+ 	 				}
+ 				}
+ 				
+ 			}
+ 		}
+ 	}
 
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;

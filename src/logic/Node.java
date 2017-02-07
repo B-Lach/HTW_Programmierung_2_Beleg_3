@@ -6,13 +6,20 @@ public class Node {
 	
 	private Node leftChild;
 	private Node rightChild;
+	private Node parentNode;
+	private int height;
 	
 	public Node(String data){
 		this.data = data;
 	}
 	
 	// setter
-	
+	protected void setHeight(int height){
+		this.height = height;
+	}
+	protected void setParentNode(Node node){
+		parentNode = node;
+	}
 	protected void setLeftChild(Node node) {
 		leftChild = node;
 	}
@@ -22,12 +29,18 @@ public class Node {
 	}
 	
 	// getters
+	public Node getParentNode(){
+		return parentNode;
+	}
 	public Node getLeftChild() {
 		return leftChild;
 	}
 	
 	public Node getRightChild() {
 		return rightChild;
+	}
+	public int getHeight(){
+		return height;
 	}
 	
 	public String getData() {
