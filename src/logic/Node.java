@@ -7,16 +7,17 @@ public class Node {
 	private Node leftChild;
 	private Node rightChild;
 	private Node parentNode;
-	private int height;
+	private int balance;
 	
 	public Node(String data){
 		this.data = data;
 	}
 	
 	// setter
-	protected void setHeight(int height){
-		this.height = height;
+	protected void setBalance(int balance){
+		this.balance = balance;
 	}
+	
 	protected void setParentNode(Node node){
 		parentNode = node;
 	}
@@ -28,7 +29,7 @@ public class Node {
 		rightChild = node;
 	}
 	
-	// getters
+	// getter
 	public Node getParentNode(){
 		return parentNode;
 	}
@@ -39,8 +40,8 @@ public class Node {
 	public Node getRightChild() {
 		return rightChild;
 	}
-	public int getHeight(){
-		return height;
+	public int getBalance(){
+		return balance;
 	}
 	
 	public String getData() {
