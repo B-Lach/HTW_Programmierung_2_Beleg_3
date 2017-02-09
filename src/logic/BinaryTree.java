@@ -20,27 +20,12 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
-//
-//	public static void main(String[] args) {
-//
-//		BinaryTree theTree = new BinaryTree();
-//
-//		theTree.addNode("50");
-//		theTree.addNode("25");
-//		theTree.addNode("15");
-//		theTree.addNode("30");
-//		theTree.addNode("75");
-//		theTree.addNode("85");
-//
-//		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
-//		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
-//	}
-
+	private String stringPath;
 	private Node root;
+	private Boolean useAvl = false;
+	
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 	public final static String FILE_EXTENSION = "btv";
-	
-	private String stringPath;
 	
 	/**
 	 * Method to get the current path of the used file
@@ -49,75 +34,147 @@ public class BinaryTree {
 	public String getStringPath(){
 		return stringPath;
 	}
-
+	
+	/**
+	 * Method to set the avl option. If true, a tree is balanced automatically
+	 * @param useAvl The boolean to set 
+	 */
+	public void setUseAvl(Boolean useAvl) {
+		this.useAvl = useAvl;
+		if (useAvl) {
+			rebalanceTreeIfNeeded();
+		}
+	}
+	
+	/**
+	 * Method to re-balance the tree if needed.
+	 */
+	private void rebalanceTreeIfNeeded() {
+		// TODO Implement logic
+	}
+	
+	/**
+	 * Method to calculate the balance of the tree and all its subtrees
+	 * @param node The root node of the tree
+	 */
+	private void calculateBalance(Node node) {
+		// nothing to calculate at this point
+		if (node == null) { return; }
+		
+		int right = getDepthOfSubtree(node.getRightChild());
+		int left = getDepthOfSubtree(node.getLeftChild());
+		System.out.println("Right has depth: " + right);
+		System.out.println("Left has depth: " + left);
+		node.setBalance(right - left);
+		System.out.println("Node with data: " + node.getData() + " has balance: " + node.getBalance());
+		
+		calculateBalance(node.getRightChild());
+		calculateBalance(node.getLeftChild());
+	}
+	
+	/**
+	 * Method to calculate the depth of a subtree based on a given root node
+	 * @param node The root node of the subtree
+	 * @return The depth of the subtree as Integer
+	 */
+	private int getDepthOfSubtree(Node node) {
+		// nothing to calculate at this point
+		if (node == null) { return 0; }
+		
+		int leftHeight = getDepthOfSubtree(node.getLeftChild());
+		int rightHeight = getDepthOfSubtree(node.getRightChild());
+		
+		if (leftHeight == 0 && rightHeight == 0) { return 1; }
+		return leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+		
+	}
+	
+	/**
+	 * Public method to add a new Node. Returns a boolean to identify if the new node was added. Returns false if the data is already part of the node.
+	 * @param data The data of the node to add
+	 * @return Boolean identifier if the node was added
+	 */
 	public Boolean addNode(String data) {
-
-		// creates a new node
-
-		Node newNode = new Node(data);
-
 		// without a root node this will become root
 
 		if (root == null) {
-
+			Node newNode = new Node(data);
 			root = newNode;
-			newNode.setHeight(1);
+			newNode.setBalance(0);
+			
 			return true;
 		} else {
+			Boolean wasAdded = _addNode(data);
+			if (wasAdded) {
+				// calculate the new balance
+				calculateBalance(root);
+				if (useAvl) {
+					// if AVL is active, re-balance the tree if needed
+					rebalanceTreeIfNeeded();
+				}
+			}
+			return wasAdded;
+		}
+	}
+	
+	/**
+	 * Private method to add a new node. Return value is a boolean to identify if the new node was added. Returns false if the data is already part of the node.
+	 * @param data The data of the node to add
+	 * @return Boolean Identifier if the node was added 
+	 */
+	private Boolean _addNode(String data) {
+		// init new node
+		Node newNode = new Node(data);
+		// sets root as starting point for traversing the tree
+		Node focusNode = root;
 
-			// sets root as starting point for traversing the tree
-			Node focusNode = root;
+		// future parent for new node
+		Node parent;
 
-			// future parent for new node
-			Node parent;
+		while (true) {
+			// start at top with root
+			parent = focusNode;
 
-			while (true) {
+			// check whether new node goes on left or right side
 
-				// start at top with root
+			if (data.compareTo(focusNode.getData()) < 0) {
 
-				parent = focusNode;
+				focusNode = focusNode.getLeftChild();
 
-				// check whether new node goes on left or right side
+				// if left child has no children
+				if (focusNode == null) {
 
-				if (data.compareTo(focusNode.getData()) < 0) {
+					// places new node on the left
+					parent.setLeftChild(newNode);
+					newNode.setParentNode(parent);
 
-					focusNode = focusNode.getLeftChild();
+					return true;
+				}
+			} else if (data.compareTo(focusNode.getData()) > 0) {
 
-					// if left child has no children
-					if (focusNode == null) {
+				// puts node on right side
+				focusNode = focusNode.getRightChild();
 
-						// places new node on the left
-						parent.setLeftChild(newNode);
-						newNode.setParentNode(parent);
-						newNode.setHeight(parent.getHeight() + 1);
-						return true;
-					}
-				} else if (data.compareTo(focusNode.getData()) > 0) {
+				// if right child has no children
+				if (focusNode == null) {
 
-					// puts node on right side
-					focusNode = focusNode.getRightChild();
+					// place new node on the right
+					parent.setRightChild(newNode);
+					newNode.setParentNode(parent);
+					
+					return true;
+				}
 
-					// if right child has no children
-					if (focusNode == null) {
-
-						// place new node on the right
-						parent.setRightChild(newNode);
-						newNode.setParentNode(parent);
-						newNode.setHeight(parent.getHeight() + 1);
-						return true;
-					}
-
-					// check if a duplicate node is being added
-				} else {
-					if (data.compareTo(focusNode.getData()) == 0) {
-						System.out.println("add: no duplicate nodes allowed");
-						return false;
-					}
+				// check if a duplicate node is being added
+			} else {
+				if (data.compareTo(focusNode.getData()) == 0) {
+					System.out.println("add: no duplicate nodes allowed");
+					return false;
 				}
 			}
 		}
 	}
-
+	
 	public boolean deleteAll() {
 		root = null;
 		if (root == null) {
@@ -127,13 +184,34 @@ public class BinaryTree {
 	}
 
 	/**
-	 * delete method for nodes
+	 * public delete method for nodes
 	 * 
 	 * @param data
 	 *            the node that the user wants to delete
 	 * @return returns true if deletion was successful and false if it was not
 	 */
 	public boolean deleteNode(String data) {
+		Boolean deleted = _deleteNode(data);
+		
+		if (deleted) {
+			// calculate the new balance
+			calculateBalance(root);
+			if (useAvl) {
+				// if AVL is active, re-balance the tree if needed
+				rebalanceTreeIfNeeded();
+			}
+		}
+		return deleted;
+	}
+	
+	/**
+	 * private delete method for nodes
+	 * 
+	 * @param data
+	 *            the node that the user wants to delete
+	 * @return returns true if deletion was successful and false if it was not
+	 */
+	private boolean _deleteNode(String data) {
 
 		Node focusNode = root;
 		Node parent = root;
@@ -202,7 +280,6 @@ public class BinaryTree {
 				}
 				replacement.setLeftChild(focusNode.getLeftChild());
 			}
-			adjustParameters(root);
 			
 			return true;
 		}
@@ -352,40 +429,6 @@ public class BinaryTree {
 		}
 		System.out.println(list.toString());
 	}
- 	/**
- 	 * private method for adjusting height and parentNode variables after a deletion was succesful in the BST
- 	 * @param focusNode root node of the BST
- 	 */
- 	private void adjustParameters(Node focusNode){
- 		if(focusNode != null){
- 			try{
- 				adjustParameters(focusNode.getLeftChild());
- 			}finally{
- 				if (focusNode.getLeftChild() != null) {
- 					if(focusNode.getLeftChild().getHeight() != (focusNode.getHeight() + 1)){
- 	 					focusNode.getLeftChild().setHeight(focusNode.getHeight() + 1);
- 	 				}
- 	 				if(focusNode.getLeftChild().getParentNode() != focusNode){
- 	 					focusNode.getLeftChild().setParentNode(focusNode);
- 	 				}
- 				}
- 				
- 			}
- 			try{
- 				adjustParameters(focusNode.getRightChild());
- 			}finally{
- 				if (focusNode.getRightChild() != null) {
- 					if(focusNode.getRightChild().getHeight() != (focusNode.getHeight() + 1)){
- 	 					focusNode.getRightChild().setHeight(focusNode.getHeight() + 1);
- 	 				}
- 	 				if(focusNode.getRightChild().getParentNode() != focusNode){
- 	 					focusNode.getRightChild().setParentNode(focusNode);
- 	 				}
- 				}
- 				
- 			}
- 		}
- 	}
 
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
