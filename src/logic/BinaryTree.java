@@ -20,19 +20,106 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
+	/**
+	 * Enum to identify which rotation has to be performed to re-balance the tree,
+	 * @author Benny Lach
+	 *
+	 */
 	private enum RotationType {
+		// +2 +1
 		ClockwiseSmall,
+		// -2 +1
 		ClockwiseBig,
+		// -2 -1
 		CounterClockwiseSmall,
+		// +2 -1
 		CounterClockwiseBig	
 	}
-	
+	// path to the file the tree was loaded from/saved to
 	private String stringPath;
+	// root node
 	private Node root;
-	private Boolean useAvl = false;
-	
+	// Boolean to identify if the tree behaves as an AVL tree
+	private Boolean useAvl;
+	// Encoding identifier for the file
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	// File extension type
 	public final static String FILE_EXTENSION = "btv";
+	
+	/**
+	 * Static Function to initialize a new Tree from a given file
+	 * @param stringPath Path to the file to use
+	 * @return Instance of BinaryTree if the file is valid. Otherwise null
+	 */
+	public static BinaryTree loadTreeFromFile(String stringPath) {
+		// check if the file to load is valid
+		if(pathIsValid(stringPath)) {
+			Path path = Paths.get(stringPath);
+			
+			if (Files.isReadable(path)) {
+				try {
+					// fetch data as List<String> from file
+					List<String> treeList = Files.readAllLines(path, ENCODING);
+					// validate content
+					if (validateFileContent(treeList)) { 
+						// create new tree
+						// TODO Update handling to initialize not always with AVL turned off
+						BinaryTree tree = new BinaryTree(false);
+						for(String data: treeList) {
+							tree.addNode(data);
+						}
+						// store the current used path to be able to save to that file in the future again
+						tree.stringPath = stringPath;
+
+						return tree;
+					}
+				} catch (IOException e) {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Function to check if a given string is a valid file path
+	 * @param path The path to check
+	 * @return True if the path is valid. Otherwise false
+	 */
+	private static Boolean pathIsValid(String path) {
+		return path.endsWith("." + FILE_EXTENSION);
+	}
+	
+	/**
+	 * Function to validate content of a loaded file
+	 * @param content The content to validate
+	 * @return True if content is valid. Otherwise false
+	 */
+	private static Boolean validateFileContent(List<String> content) {
+		for(int i = 0; i < content.size(); i++) {
+			String s = content.get(i);
+			// fist string has to be an string representation of the AVL option
+			if (i == 0) {
+				if (s != "false" && s != "true") {
+					return false;
+				}
+			// rest of the strings are nodes to load
+			} else {
+				if (s.length() < 1 || s.length() > 3) {
+					return false;
+				}
+			}	
+		}
+		return true;
+	}
+	
+	/**
+	 * Constructor to initialize a new BinaryTree instance
+	 * @param useAvl Option to identify if the tree has to behave as AVL Tree
+	 */
+	public BinaryTree(Boolean useAvl) {
+		this.useAvl = useAvl;
+	}
 	
 	/**
 	 * Method to get the current path of the used file
@@ -40,26 +127,6 @@ public class BinaryTree {
 	 */
 	public String getStringPath(){
 		return stringPath;
-	}
-	
-	/**
-	 * Method to set the avl option. If true, a tree is balanced automatically
-	 * @param useAvl The boolean to set 
-	 */
-	public void setUseAvl(Boolean useAvl) {
-		this.useAvl = useAvl;
-		System.out.println("AVL active: " + useAvl);
-		if (useAvl) {
-			replaceTreeIfNeeded(root);
-		}
-	}
-	
-	/**
-	 * Method to get the current AVL usage state
-	 * @return Boolean to identify if AVL is active
-	 */
-	public Boolean getUseAvl() {
-		return useAvl;
 	}
 	
 	/**
@@ -457,36 +524,6 @@ public class BinaryTree {
 	public Node getRootNode() {
 		return root;
 	}
-	
-	public Boolean loadTreeFromFile(String stringPath) {
-		// check if the file to load is valid
-		if(pathIsValid(stringPath)) {
-			Path path = Paths.get(stringPath);
-			
-			if (Files.isReadable(path)) {
-				try {
-					// fetch data as List<String> from file
-					List<String> treeList = Files.readAllLines(path, ENCODING);
-					// validate content
-					if (validateFileContent(treeList)) {
-						// clear current stored hierarchy 
-						deleteAll();
-						// create new tree
-						for(String data: treeList) {
-							addNode(data);
-						}
-						// store the current used path to be able to save to that file in the future again
-						this.stringPath = stringPath;
-
-						return true;
-					}
-				} catch (IOException e) {
-					return false;
-				}
-			}
-		}
-		return false;
-	}
 
 	public Boolean saveTreeToFile(String stringPath) {
 		// check if the given path is valid
@@ -534,15 +571,6 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * Method to check if a given string is a valid file path
-	 * @param path The path to check
-	 * @return True if the path is valid. Otherwise false
-	 */
-	private Boolean pathIsValid(String path) {
-		return path.endsWith("." + FILE_EXTENSION);
-	}
-	
-	/**
 	 * Method to add a valid file extension to a given path
 	 * @param path The path to add the file extension
 	 * @return The path with valid extension
@@ -551,19 +579,6 @@ public class BinaryTree {
 		return path += "." + FILE_EXTENSION;
 	}
 	
-	/**
-	 * Method to validate content of a loaded file
-	 * @param content The content to validate
-	 * @return True if content is valid. Otherwise false
-	 */
-	private Boolean validateFileContent(List<String> content) {
-		for(String s: content) {
-			if (s.length() < 1 || s.length() > 3) {
-				return false;
-			}
-		}
-		return true;
-	}
  	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
