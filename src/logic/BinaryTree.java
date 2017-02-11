@@ -16,7 +16,7 @@ import java.io.OutputStreamWriter;
 /**
  * binary tree class
  * 
- * @author Rico
+ * @author Rico Stucke
  *
  */
 public class BinaryTree {
@@ -49,7 +49,12 @@ public class BinaryTree {
 	public String getStringPath(){
 		return stringPath;
 	}
-
+	
+	/**
+	 * method to add a node to the tree
+	 * @param data the value of the node
+	 * @return returns true if successful
+	 */
 	public Boolean addNode(String data) {
 
 		// creates a new node
@@ -117,7 +122,11 @@ public class BinaryTree {
 			}
 		}
 	}
-
+	
+	/**
+	 * method to delete all nodes of the tree
+	 * @return returns true if successful
+	 */
 	public boolean deleteAll() {
 		root = null;
 		if (root == null) {
@@ -209,7 +218,12 @@ public class BinaryTree {
 		System.out.println("delete: node not found");
 		return false;
 	}
-
+	
+	/**
+	 * method for searching for a specific node
+	 * @param data value of the searched node
+	 * @return returns the searched node
+	 */
 	public Node findNode(String data) {
 
 		// starts at top of the tree
@@ -232,11 +246,19 @@ public class BinaryTree {
 		}
 		return focusNode;
 	}
-
+	/**
+	 * root node getter
+	 * @return returns root node
+	 */
 	public Node getRootNode() {
 		return root;
 	}
 	
+	/**
+	 * method for loading a binary tree from a file
+	 * @param stringPath path to the file
+	 * @return returns true if successful
+	 */
 	public Boolean loadTreeFromFile(String stringPath) {
 		// check if the file to load is valid
 		if(pathIsValid(stringPath)) {
@@ -266,7 +288,11 @@ public class BinaryTree {
 		}
 		return false;
 	}
-
+	/**
+	 * method for saving the binary tree to a file
+	 * @param stringPath path to the file
+	 * @return returns true if successful
+	 */
 	public Boolean saveTreeToFile(String stringPath) {
 		// check if the given path is valid
 		// if it isn't add the valid file extension
@@ -343,6 +369,11 @@ public class BinaryTree {
 		}
 		return true;
 	}
+	/**
+	 * method for iterating through the tree
+	 * @param focusNode start of the iteration
+	 * @param list list where all the nodes will be saved
+	 */
  	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
@@ -386,7 +417,11 @@ public class BinaryTree {
  			}
  		}
  	}
-
+ 	/**
+ 	 * private helper method for the node deletion method
+ 	 * @param replacedNode node that will be replaced
+ 	 * @return returns new node for the node that needed to be replaced
+ 	 */
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
