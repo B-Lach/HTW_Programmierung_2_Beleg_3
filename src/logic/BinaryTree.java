@@ -63,11 +63,7 @@ public class BinaryTree {
 					// validate content
 					if (validateFileContent(treeList)) { 
 						// create new tree
-						// TODO Update handling to initialize not always with AVL turned off
-						BinaryTree tree = new BinaryTree(false);
-						for(String data: treeList) {
-							tree.addNode(data);
-						}
+						BinaryTree tree = new BinaryTree(treeList);	
 						// store the current used path to be able to save to that file in the future again
 						tree.stringPath = stringPath;
 
@@ -119,6 +115,18 @@ public class BinaryTree {
 	 */
 	public BinaryTree(Boolean useAvl) {
 		this.useAvl = useAvl;
+	}
+	
+	/**
+	 * Constructor to initialize a new BinaryTree instance with content from a file
+	 * @param fileContent The content of the file
+	 */
+	public BinaryTree(List<String> fileContent) {
+		this.useAvl = fileContent.get(0) == "true";
+		
+		for(String data: fileContent.subList(1, fileContent.size() - 1)) {
+			addNode(data);
+		}
 	}
 	
 	/**
