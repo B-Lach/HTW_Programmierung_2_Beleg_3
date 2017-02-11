@@ -122,11 +122,18 @@ public class BinaryTree {
 	 * @param fileContent The content of the file
 	 */
 	public BinaryTree(List<String> fileContent) {
-		this.useAvl = fileContent.get(0).compareTo("true") == 0 ;
+		// Setting the avl option first can result in a different tree as it was by saving to the file
+		// The saved data is already in the correct order
+		// Workflow is:
+		// 1. Set useAvl to false
+		// 2. Load the nodes in the order saved to the file
+		// 3. Set the correct useAvl option
+		this.useAvl = false;
 		
 		for(String data: fileContent.subList(1, fileContent.size())) {
 			addNode(data);
 		}
+		this.useAvl = fileContent.get(0).compareTo("true") == 0 ;
 	}
 	
 	/**
