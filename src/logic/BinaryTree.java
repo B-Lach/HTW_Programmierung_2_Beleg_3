@@ -20,27 +20,114 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
-//
-//	public static void main(String[] args) {
-//
-//		BinaryTree theTree = new BinaryTree();
-//
-//		theTree.addNode("50");
-//		theTree.addNode("25");
-//		theTree.addNode("15");
-//		theTree.addNode("30");
-//		theTree.addNode("75");
-//		theTree.addNode("85");
-//
-//		theTree.saveTreeToFile("C:/Users/Rico/Documents/test.txt");
-//		theTree.loadTreeFromFile("C:/Users/Rico/Documents/test.txt");
-//	}
-
+	/**
+	 * Enum to identify which rotation has to be performed to re-balance the tree,
+	 * @author Benny Lach
+	 *
+	 */
+	private enum RotationType {
+		// +2 +1
+		ClockwiseSmall,
+		// -2 +1
+		ClockwiseBig,
+		// -2 -1
+		CounterClockwiseSmall,
+		// +2 -1
+		CounterClockwiseBig	
+	}
+	// path to the file the tree was loaded from/saved to
+	private String stringPath;
+	// root node
 	private Node root;
+	// Boolean to identify if the tree behaves as an AVL tree
+	private Boolean useAvl;
+	// Encoding identifier for the file
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	// File extension type
 	public final static String FILE_EXTENSION = "btv";
 	
-	private String stringPath;
+	/**
+	 * Static Function to initialize a new Tree from a given file
+	 * @param stringPath Path to the file to use
+	 * @return Instance of BinaryTree if the file is valid. Otherwise null
+	 */
+	public static BinaryTree loadTreeFromFile(String stringPath) {
+		// check if the file to load is valid
+		if(pathIsValid(stringPath)) {
+			Path path = Paths.get(stringPath);
+			
+			if (Files.isReadable(path)) {
+				try {
+					// fetch data as List<String> from file
+					List<String> treeList = Files.readAllLines(path, ENCODING);
+					// validate content
+					if (validateFileContent(treeList)) { 
+						// create new tree
+						BinaryTree tree = new BinaryTree(treeList);	
+						// store the current used path to be able to save to that file in the future again
+						tree.stringPath = stringPath;
+
+						return tree;
+					}
+				} catch (IOException e) {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Function to check if a given string is a valid file path
+	 * @param path The path to check
+	 * @return True if the path is valid. Otherwise false
+	 */
+	private static Boolean pathIsValid(String path) {
+		return path.endsWith("." + FILE_EXTENSION);
+	}
+	
+	/**
+	 * Function to validate content of a loaded file
+	 * @param content The content to validate
+	 * @return True if content is valid. Otherwise false
+	 */
+	private static Boolean validateFileContent(List<String> content) {
+		for(int i = 0; i < content.size(); i++) {
+			String s = content.get(i);
+			// fist string has to be an string representation of the AVL option
+			if (i == 0) {
+				if (s.compareTo("false") != 0 && s.compareTo("true") != 0) {
+					return false;
+				}
+			// rest of the strings are nodes to load
+			} else {
+				if (s.length() < 1 || s.length() > 3) {
+					return false;
+				}
+			}	
+		}
+		return true;
+	}
+	
+	/**
+	 * Constructor to initialize a new BinaryTree instance
+	 * @param useAvl Option to identify if the tree has to behave as AVL Tree
+	 */
+	public BinaryTree(Boolean useAvl) {
+		this.useAvl = useAvl;
+	}
+	
+	/**
+	 * Constructor to initialize a new BinaryTree instance with content from a file
+	 * @param fileContent The content of the file
+	 */
+	public BinaryTree(List<String> fileContent) {
+		this.useAvl = fileContent.get(0).compareTo("true") == 0 ;
+		
+		for(String data: fileContent.subList(1, fileContent.size())) {
+			addNode(data);
+		}
+	}
 	
 	/**
 	 * Method to get the current path of the used file
@@ -51,82 +138,270 @@ public class BinaryTree {
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * method to add a node to the tree
 	 * @param data the value of the node
 	 * @return returns true if successful
+=======
+	 * Method to re-balance the tree if needed.
+	 */
+	private void replaceTreeIfNeeded(Node subRoot) {
+		// Reached end of iteration
+		if (subRoot == null) { return;}
+		// current subtree is balanced
+		if (Math.abs(subRoot.getBalance()) < 2) {
+			// check right subtree
+			replaceTreeIfNeeded(subRoot.getRightChild());
+			// check left subtree
+			replaceTreeIfNeeded(subRoot.getLeftChild());
+		} else {
+			// subtree is unbalanced
+			if (Math.abs(subRoot.getBalance()) == 2) {
+				// right side is unbalanced
+				if (subRoot.getBalance() > 0) {
+					// found criterion for rotation => sub-root == 2 && rightChild == |1| || 0
+					if (Math.abs(subRoot.getRightChild().getBalance()) == 1 || subRoot.getRightChild().getBalance() == 0) {
+						// clockwise small rotation found
+						if (subRoot.getRightChild().getBalance() >= 0) {
+							makeRotation(subRoot,RotationType.ClockwiseSmall);
+						} else {
+							makeRotation(subRoot, RotationType.CounterClockwiseBig);
+						}
+						// time to re-balance and iterate again over the tree, start with root
+						calculateBalance(root);
+						replaceTreeIfNeeded(root);
+						
+						return;
+					}
+				} else {
+					// // found criterion for rotation => sub-root == -2 && leftChild == |1| || 0
+					if (Math.abs(subRoot.getLeftChild().getBalance()) == 1 || subRoot.getLeftChild().getBalance() == 0) {
+						// counter clockwise small rotation found
+						if (subRoot.getLeftChild().getBalance() <= 0) {
+							makeRotation(subRoot,RotationType.CounterClockwiseSmall);
+						} else {
+							makeRotation(subRoot,RotationType.ClockwiseBig);
+						}
+						// time to re-balance and iterate again over the tree, start with root
+						calculateBalance(root);
+						replaceTreeIfNeeded(root);
+						
+						return;
+					}
+				}
+			}
+			// reaching this line means tree is unbalanced but criteria was not found
+			replaceTreeIfNeeded(subRoot.getRightChild());
+			replaceTreeIfNeeded(subRoot.getLeftChild());
+		}
+	}
+	
+	/**
+	 * Method to rotate a subtree. Used to validate balance of an AVL tree
+	 * @param node The root of the subtree to rotate
+	 * @param type The type of rotation to use
+	 */
+	private void makeRotation(Node node, RotationType type) {
+		Node newParent;
+		
+		switch(type) {
+		case ClockwiseSmall:
+			// right child will become new parent, parent will become left child
+			newParent = node.getRightChild();
+			// left child of new node will become right child of old root
+			node.setRightChild(newParent.getLeftChild());
+			if (node.getRightChild() != null) {
+				node.getRightChild().setParentNode(node);
+			}
+			
+			newParent.setParentNode(node.getParentNode());
+			// if parent is not null update it's child
+			// otherwise old parent is root node of the whole tree
+			if(newParent.getParentNode() != null) {
+				if (newParent.getData().compareTo(newParent.getParentNode().getData()) > 0) {
+					newParent.getParentNode().setRightChild(newParent);
+				} else {
+					newParent.getParentNode().setLeftChild(newParent);
+				}
+			} else {
+				root = newParent;
+			}
+			// old parent will become left child of new Parent
+			node.setParentNode(newParent);
+			newParent.setLeftChild(node);
+			break;
+		case ClockwiseBig:
+			// 1. step: rotate clockwise small node.leftChild
+			// 2. step:  rotate counter clockwise node
+			makeRotation(node.getLeftChild(), RotationType.ClockwiseSmall);
+			makeRotation(node, RotationType.CounterClockwiseSmall);
+			break;
+		case CounterClockwiseSmall:
+			// left child will become new parent, parent will become right child
+			newParent = node.getLeftChild();
+			// right child of new parent will become left child of old parent
+			node.setLeftChild(newParent.getRightChild());
+			if (node.getLeftChild() != null) {
+				node.getLeftChild().setParentNode(node);
+			}
+			
+			newParent.setParentNode(node.getParentNode());
+			// if parent is not null update left child
+			// otherwise old parent is root node of the whole tree
+			if (newParent.getParentNode() != null) {
+				if (newParent.getData().compareTo(newParent.getParentNode().getData()) > 0) {
+					newParent.getParentNode().setRightChild(newParent);
+				} else {
+					newParent.getParentNode().setLeftChild(newParent);
+				}
+			}  else {
+				root = newParent;
+			}
+			// old parent will become right child of new parent
+			node.setParentNode(newParent);
+			newParent.setRightChild(node);
+			break;
+		case CounterClockwiseBig:
+			// 1. step: rotate counter clockwise small node.rightChild
+			// 2. step: rotate clockwise small node
+			makeRotation(node.getRightChild(), RotationType.CounterClockwiseSmall);
+			makeRotation(node, RotationType.ClockwiseSmall);
+			break;
+			default:
+				return;
+		}
+	}
+	
+	
+	/**
+	 * Method to calculate the balance of the tree and all its subtrees
+	 * @param node The root node of the tree
+	 */
+	private void calculateBalance(Node node) {
+		// nothing to calculate at this point
+		if (node == null) { return; }
+		
+		int right = getDepthOfSubtree(node.getRightChild());
+		int left = getDepthOfSubtree(node.getLeftChild());
+		
+		node.setBalance(right - left);
+//		System.out.println("Node with data: " + node.getData() + " has balance: " + node.getBalance());
+		
+		calculateBalance(node.getRightChild());
+		calculateBalance(node.getLeftChild());
+	}
+	
+	/**
+	 * Method to calculate the depth of a subtree based on a given root node
+	 * @param node The root node of the subtree
+	 * @return The depth of the subtree as Integer
+	 */
+	private int getDepthOfSubtree(Node node) {
+		// nothing to calculate at this point
+		if (node == null) { return 0; }
+		
+		int leftHeight = getDepthOfSubtree(node.getLeftChild());
+		int rightHeight = getDepthOfSubtree(node.getRightChild());
+		
+		if (leftHeight == 0 && rightHeight == 0) { return 1; }
+		return leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+		
+	}
+	
+	/**
+	 * Public method to add a new Node. Returns a boolean to identify if the new node was added. Returns false if the data is already part of the node.
+	 * @param data The data of the node to add
+	 * @return Boolean identifier if the node was added
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	 */
 	public Boolean addNode(String data) {
-
-		// creates a new node
-
-		Node newNode = new Node(data);
-
 		// without a root node this will become root
 
 		if (root == null) {
-
+			Node newNode = new Node(data);
 			root = newNode;
-			newNode.setHeight(1);
+			newNode.setBalance(0);
+			
 			return true;
 		} else {
+			Boolean wasAdded = _addNode(data);
+			if (wasAdded) {
+				// calculate the new balance
+				calculateBalance(root);
+				if (useAvl) {
+					// if AVL is active, re-balance the tree if needed
+					replaceTreeIfNeeded(root);
+				}
+			}
+			return wasAdded;
+		}
+	}
+	
+	/**
+	 * Private method to add a new node. Return value is a boolean to identify if the new node was added. Returns false if the data is already part of the node.
+	 * @param data The data of the node to add
+	 * @return Boolean Identifier if the node was added 
+	 */
+	private Boolean _addNode(String data) {
+		// init new node
+		Node newNode = new Node(data);
+		// sets root as starting point for traversing the tree
+		Node focusNode = root;
 
-			// sets root as starting point for traversing the tree
-			Node focusNode = root;
+		// future parent for new node
+		Node parent;
 
-			// future parent for new node
-			Node parent;
+		while (true) {
+			// start at top with root
+			parent = focusNode;
 
-			while (true) {
+			// check whether new node goes on left or right side
 
-				// start at top with root
+			if (data.compareTo(focusNode.getData()) < 0) {
 
-				parent = focusNode;
+				focusNode = focusNode.getLeftChild();
 
-				// check whether new node goes on left or right side
+				// if left child has no children
+				if (focusNode == null) {
 
-				if (data.compareTo(focusNode.getData()) < 0) {
+					// places new node on the left
+					parent.setLeftChild(newNode);
+					newNode.setParentNode(parent);
 
-					focusNode = focusNode.getLeftChild();
+					return true;
+				}
+			} else if (data.compareTo(focusNode.getData()) > 0) {
 
-					// if left child has no children
-					if (focusNode == null) {
+				// puts node on right side
+				focusNode = focusNode.getRightChild();
 
-						// places new node on the left
-						parent.setLeftChild(newNode);
-						newNode.setParentNode(parent);
-						newNode.setHeight(parent.getHeight() + 1);
-						return true;
-					}
-				} else if (data.compareTo(focusNode.getData()) > 0) {
+				// if right child has no children
+				if (focusNode == null) {
 
-					// puts node on right side
-					focusNode = focusNode.getRightChild();
+					// place new node on the right
+					parent.setRightChild(newNode);
+					newNode.setParentNode(parent);
+					
+					return true;
+				}
 
-					// if right child has no children
-					if (focusNode == null) {
-
-						// place new node on the right
-						parent.setRightChild(newNode);
-						newNode.setParentNode(parent);
-						newNode.setHeight(parent.getHeight() + 1);
-						return true;
-					}
-
-					// check if a duplicate node is being added
-				} else {
-					if (data.compareTo(focusNode.getData()) == 0) {
-						System.out.println("add: no duplicate nodes allowed");
-						return false;
-					}
+				// check if a duplicate node is being added
+			} else {
+				if (data.compareTo(focusNode.getData()) == 0) {
+					System.out.println("add: no duplicate nodes allowed");
+					return false;
 				}
 			}
 		}
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * method to delete all nodes of the tree
 	 * @return returns true if successful
 	 */
+=======
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	public boolean deleteAll() {
 		root = null;
 		if (root == null) {
@@ -136,13 +411,34 @@ public class BinaryTree {
 	}
 
 	/**
-	 * delete method for nodes
+	 * public delete method for nodes
 	 * 
 	 * @param data
 	 *            the node that the user wants to delete
 	 * @return returns true if deletion was successful and false if it was not
 	 */
 	public boolean deleteNode(String data) {
+		Boolean deleted = _deleteNode(data);
+		
+		if (deleted) {
+			// calculate the new balance
+			calculateBalance(root);
+			if (useAvl) {
+				// if AVL is active, re-balance the tree if needed
+				replaceTreeIfNeeded(root);
+			}
+		}
+		return deleted;
+	}
+	
+	/**
+	 * private delete method for nodes
+	 * 
+	 * @param data
+	 *            the node that the user wants to delete
+	 * @return returns true if deletion was successful and false if it was not
+	 */
+	private boolean _deleteNode(String data) {
 
 		Node focusNode = root;
 		Node parent = root;
@@ -184,19 +480,25 @@ public class BinaryTree {
 
 				if (focusNode == root) {
 					root = focusNode.getLeftChild();
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getLeftChild());
+					parent.getLeftChild().setParentNode(parent);
 				} else {
 					parent.setRightChild(focusNode.getLeftChild());
+					parent.getRightChild().setParentNode(parent);
 				}
 				// only right child
 			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
 					root = focusNode.getRightChild();
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getRightChild());
+					parent.getLeftChild().setParentNode(parent);
 				} else {
 					parent.setRightChild(focusNode.getRightChild());
+					parent.getRightChild().setParentNode(parent);
 				}
 				// left and right child
 			} else {
@@ -204,14 +506,17 @@ public class BinaryTree {
 
 				if (focusNode == root) {
 					root = replacement;
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(replacement);
+					replacement.setParentNode(parent);
 				} else {
 					parent.setRightChild(replacement);
+					replacement.setParentNode(parent);
 				}
 				replacement.setLeftChild(focusNode.getLeftChild());
+				replacement.getLeftChild().setParentNode(replacement);
 			}
-			adjustParameters(root);
 			
 			return true;
 		}
@@ -253,6 +558,7 @@ public class BinaryTree {
 	public Node getRootNode() {
 		return root;
 	}
+<<<<<<< HEAD
 	
 	/**
 	 * method for loading a binary tree from a file
@@ -293,6 +599,9 @@ public class BinaryTree {
 	 * @param stringPath path to the file
 	 * @return returns true if successful
 	 */
+=======
+
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	public Boolean saveTreeToFile(String stringPath) {
 		// check if the given path is valid
 		// if it isn't add the valid file extension
@@ -304,7 +613,9 @@ public class BinaryTree {
 		ArrayList<String> treeArray = new ArrayList<String>();
 		preorderTraverseTree(focusNode, treeArray);
 		Path storePath = Paths.get(stringPath);
-
+		// add the AVL option to the content
+		treeArray.add(0, useAvl == true? "true": "false");
+		
 		if (!Files.isWritable(storePath)) {
 			try {
 				Files.createFile(storePath);
@@ -339,15 +650,6 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * Method to check if a given string is a valid file path
-	 * @param path The path to check
-	 * @return True if the path is valid. Otherwise false
-	 */
-	private Boolean pathIsValid(String path) {
-		return path.endsWith("." + FILE_EXTENSION);
-	}
-	
-	/**
 	 * Method to add a valid file extension to a given path
 	 * @param path The path to add the file extension
 	 * @return The path with valid extension
@@ -356,6 +658,7 @@ public class BinaryTree {
 		return path += "." + FILE_EXTENSION;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Method to validate content of a loaded file
 	 * @param content The content to validate
@@ -374,6 +677,8 @@ public class BinaryTree {
 	 * @param focusNode start of the iteration
 	 * @param list list where all the nodes will be saved
 	 */
+=======
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
  	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
@@ -383,6 +688,7 @@ public class BinaryTree {
 		}
 		System.out.println(list.toString());
 	}
+<<<<<<< HEAD
  	/**
  	 * private method for adjusting height and parentNode variables after a deletion was succesful in the BST
  	 * @param focusNode root node of the BST
@@ -422,6 +728,9 @@ public class BinaryTree {
  	 * @param replacedNode node that will be replaced
  	 * @return returns new node for the node that needed to be replaced
  	 */
+=======
+
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
@@ -435,7 +744,14 @@ public class BinaryTree {
 
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
+			if (replacementParent.getLeftChild() != null) {
+				replacementParent.getLeftChild().setParentNode(replacementParent);
+			}
+			
 			replacement.setRightChild(replacedNode.getRightChild());
+			if (replacement.getRightChild() != null ) {
+				replacement.getRightChild().setParentNode(replacement);
+			}
 		}
 		return replacement;
 	}
