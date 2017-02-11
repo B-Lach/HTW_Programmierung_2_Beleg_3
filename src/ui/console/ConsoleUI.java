@@ -85,9 +85,10 @@ public class ConsoleUI {
 	/**
 	 * Function to create a tree from user input
 	 */
-	private static void createTree() {	
-		tree = new BinaryTree();
-		
+	private static void createTree() {
+		Boolean useAvl = InputHandler.getBooleanInput("Do you want to initialize an AVL Tree? [y/n]", "y");
+		tree = new BinaryTree(useAvl);
+				
 		System.out.println("Tree was generated!");
 	}
 	
@@ -103,8 +104,9 @@ public class ConsoleUI {
 		String pathString = InputHandler.getStringInput();
 		if (pathString.equals("quit")) { return; }
 		
-		if (tree == null) { tree = new BinaryTree(); }
-		if (tree.loadTreeFromFile(pathString)) {
+		tree = BinaryTree.loadTreeFromFile(pathString);
+		
+		if (tree != null) {
 			System.out.println("Binary Tree was loaded successfully");
 		} else {
 			System.out.println("Failed to load tree from file");
@@ -181,7 +183,8 @@ public class ConsoleUI {
 	 */
 	private static void addNode() {
 		System.out.println("******** Add node ********");
-		if (tree == null ) { tree = new BinaryTree();}
+		// if tree is null, we have to initialize one first
+		if (tree == null ) { createTree();}
 		System.out.print("Type the data you want to add\n<quit> to cancel:");
 		String input = InputHandler.getStringInput();
 		
