@@ -96,7 +96,7 @@ public class BinaryTree {
 			String s = content.get(i);
 			// fist string has to be an string representation of the AVL option
 			if (i == 0) {
-				if (s != "false" && s != "true") {
+				if (s.compareTo("false") != 0 && s.compareTo("true") != 0) {
 					return false;
 				}
 			// rest of the strings are nodes to load
@@ -122,9 +122,9 @@ public class BinaryTree {
 	 * @param fileContent The content of the file
 	 */
 	public BinaryTree(List<String> fileContent) {
-		this.useAvl = fileContent.get(0) == "true";
+		this.useAvl = fileContent.get(0).compareTo("true") == 0 ;
 		
-		for(String data: fileContent.subList(1, fileContent.size() - 1)) {
+		for(String data: fileContent.subList(1, fileContent.size())) {
 			addNode(data);
 		}
 	}
@@ -191,6 +191,11 @@ public class BinaryTree {
 		}
 	}
 	
+	/**
+	 * Method to rotate a subtree. Used to validate balance of an AVL tree
+	 * @param node The root of the subtree to rotate
+	 * @param type The type of rotation to use
+	 */
 	private void makeRotation(Node node, RotationType type) {
 		Node newParent;
 		
@@ -544,7 +549,9 @@ public class BinaryTree {
 		ArrayList<String> treeArray = new ArrayList<String>();
 		preorderTraverseTree(focusNode, treeArray);
 		Path storePath = Paths.get(stringPath);
-
+		// add the AVL option to the content
+		treeArray.add(0, useAvl == true? "true": "false");
+		
 		if (!Files.isWritable(storePath)) {
 			try {
 				Files.createFile(storePath);
