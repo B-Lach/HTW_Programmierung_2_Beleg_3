@@ -16,7 +16,7 @@ import java.io.OutputStreamWriter;
 /**
  * binary tree class
  * 
- * @author Rico
+ * @author Rico Stucke
  *
  */
 public class BinaryTree {
@@ -145,6 +145,11 @@ public class BinaryTree {
 	}
 	
 	/**
+<<<<<<< HEAD
+	 * method to add a node to the tree
+	 * @param data the value of the node
+	 * @return returns true if successful
+=======
 	 * Method to re-balance the tree if needed.
 	 */
 	private void replaceTreeIfNeeded(Node subRoot) {
@@ -314,6 +319,7 @@ public class BinaryTree {
 	 * Public method to add a new Node. Returns a boolean to identify if the new node was added. Returns false if the data is already part of the node.
 	 * @param data The data of the node to add
 	 * @return Boolean identifier if the node was added
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	 */
 	public Boolean addNode(String data) {
 		// without a root node this will become root
@@ -396,6 +402,13 @@ public class BinaryTree {
 		}
 	}
 	
+<<<<<<< HEAD
+	/**
+	 * method to delete all nodes of the tree
+	 * @return returns true if successful
+	 */
+=======
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	public boolean deleteAll() {
 		root = null;
 		if (root == null) {
@@ -517,7 +530,12 @@ public class BinaryTree {
 		System.out.println("delete: node not found");
 		return false;
 	}
-
+	
+	/**
+	 * method for searching for a specific node
+	 * @param data value of the searched node
+	 * @return returns the searched node
+	 */
 	public Node findNode(String data) {
 
 		// starts at top of the tree
@@ -540,11 +558,57 @@ public class BinaryTree {
 		}
 		return focusNode;
 	}
-
+	/**
+	 * root node getter
+	 * @return returns root node
+	 */
 	public Node getRootNode() {
 		return root;
 	}
+<<<<<<< HEAD
+	
+	/**
+	 * method for loading a binary tree from a file
+	 * @param stringPath path to the file
+	 * @return returns true if successful
+	 */
+	public Boolean loadTreeFromFile(String stringPath) {
+		// check if the file to load is valid
+		if(pathIsValid(stringPath)) {
+			Path path = Paths.get(stringPath);
+			
+			if (Files.isReadable(path)) {
+				try {
+					// fetch data as List<String> from file
+					List<String> treeList = Files.readAllLines(path, ENCODING);
+					// validate content
+					if (validateFileContent(treeList)) {
+						// clear current stored hierarchy 
+						deleteAll();
+						// create new tree
+						for(String data: treeList) {
+							addNode(data);
+						}
+						// store the current used path to be able to save to that file in the future again
+						this.stringPath = stringPath;
 
+						return true;
+					}
+				} catch (IOException e) {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * method for saving the binary tree to a file
+	 * @param stringPath path to the file
+	 * @return returns true if successful
+	 */
+=======
+
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	public Boolean saveTreeToFile(String stringPath) {
 		// check if the given path is valid
 		// if it isn't add the valid file extension
@@ -601,6 +665,27 @@ public class BinaryTree {
 		return path += "." + FILE_EXTENSION;
 	}
 	
+<<<<<<< HEAD
+	/**
+	 * Method to validate content of a loaded file
+	 * @param content The content to validate
+	 * @return True if content is valid. Otherwise false
+	 */
+	private Boolean validateFileContent(List<String> content) {
+		for(String s: content) {
+			if (s.length() < 1 || s.length() > 3) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * method for iterating through the tree
+	 * @param focusNode start of the iteration
+	 * @param list list where all the nodes will be saved
+	 */
+=======
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
  	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
@@ -610,7 +695,49 @@ public class BinaryTree {
 		}
 		System.out.println(list.toString());
 	}
+<<<<<<< HEAD
+ 	/**
+ 	 * private method for adjusting height and parentNode variables after a deletion was succesful in the BST
+ 	 * @param focusNode root node of the BST
+ 	 */
+ 	private void adjustParameters(Node focusNode){
+ 		if(focusNode != null){
+ 			try{
+ 				adjustParameters(focusNode.getLeftChild());
+ 			}finally{
+ 				if (focusNode.getLeftChild() != null) {
+ 					if(focusNode.getLeftChild().getHeight() != (focusNode.getHeight() + 1)){
+ 	 					focusNode.getLeftChild().setHeight(focusNode.getHeight() + 1);
+ 	 				}
+ 	 				if(focusNode.getLeftChild().getParentNode() != focusNode){
+ 	 					focusNode.getLeftChild().setParentNode(focusNode);
+ 	 				}
+ 				}
+ 				
+ 			}
+ 			try{
+ 				adjustParameters(focusNode.getRightChild());
+ 			}finally{
+ 				if (focusNode.getRightChild() != null) {
+ 					if(focusNode.getRightChild().getHeight() != (focusNode.getHeight() + 1)){
+ 	 					focusNode.getRightChild().setHeight(focusNode.getHeight() + 1);
+ 	 				}
+ 	 				if(focusNode.getRightChild().getParentNode() != focusNode){
+ 	 					focusNode.getRightChild().setParentNode(focusNode);
+ 	 				}
+ 				}
+ 				
+ 			}
+ 		}
+ 	}
+ 	/**
+ 	 * private helper method for the node deletion method
+ 	 * @param replacedNode node that will be replaced
+ 	 * @return returns new node for the node that needed to be replaced
+ 	 */
+=======
 
+>>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;

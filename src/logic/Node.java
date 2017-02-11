@@ -1,5 +1,10 @@
 package logic;
 
+/**
+ * 
+ * @author Rico Stucke
+ *
+ */
 public class Node {
 
 	private String data;
