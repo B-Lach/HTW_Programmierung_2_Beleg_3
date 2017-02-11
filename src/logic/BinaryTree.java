@@ -20,6 +20,13 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
+	private enum RotationType {
+		ClockwiseSmall,
+		ClockwiseBig,
+		CounterClockwiseSmall,
+		CounterClockwiseBig	
+	}
+	
 	private String stringPath;
 	private Node root;
 	private Boolean useAvl = false;
@@ -41,17 +48,145 @@ public class BinaryTree {
 	 */
 	public void setUseAvl(Boolean useAvl) {
 		this.useAvl = useAvl;
+		System.out.println("AVL active: " + useAvl);
 		if (useAvl) {
-			rebalanceTreeIfNeeded();
+			replaceTreeIfNeeded(root);
 		}
+	}
+	
+	/**
+	 * Method to get the current AVL usage state
+	 * @return Boolean to identify if AVL is active
+	 */
+	public Boolean getUseAvl() {
+		return useAvl;
 	}
 	
 	/**
 	 * Method to re-balance the tree if needed.
 	 */
-	private void rebalanceTreeIfNeeded() {
-		// TODO Implement logic
+	private void replaceTreeIfNeeded(Node subRoot) {
+		// Reached end of iteration
+		if (subRoot == null) { return;}
+		// current subtree is balanced
+		if (Math.abs(subRoot.getBalance()) < 2) {
+			// check right subtree
+			replaceTreeIfNeeded(subRoot.getRightChild());
+			// check left subtree
+			replaceTreeIfNeeded(subRoot.getLeftChild());
+		} else {
+			// subtree is unbalanced
+			if (Math.abs(subRoot.getBalance()) == 2) {
+				// right side is unbalanced
+				if (subRoot.getBalance() > 0) {
+					// found criterion for rotation => sub-root == 2 && rightChild == |1| || 0
+					if (Math.abs(subRoot.getRightChild().getBalance()) == 1 || subRoot.getRightChild().getBalance() == 0) {
+						// clockwise small rotation found
+						if (subRoot.getRightChild().getBalance() >= 0) {
+							makeRotation(subRoot,RotationType.ClockwiseSmall);
+						} else {
+							makeRotation(subRoot, RotationType.CounterClockwiseBig);
+						}
+						// time to re-balance and iterate again over the tree, start with root
+						calculateBalance(root);
+						replaceTreeIfNeeded(root);
+						
+						return;
+					}
+				} else {
+					// // found criterion for rotation => sub-root == -2 && leftChild == |1| || 0
+					if (Math.abs(subRoot.getLeftChild().getBalance()) == 1 || subRoot.getLeftChild().getBalance() == 0) {
+						// counter clockwise small rotation found
+						if (subRoot.getLeftChild().getBalance() <= 0) {
+							makeRotation(subRoot,RotationType.CounterClockwiseSmall);
+						} else {
+							makeRotation(subRoot,RotationType.ClockwiseBig);
+						}
+						// time to re-balance and iterate again over the tree, start with root
+						calculateBalance(root);
+						replaceTreeIfNeeded(root);
+						
+						return;
+					}
+				}
+			}
+			// reaching this line means tree is unbalanced but criteria was not found
+			replaceTreeIfNeeded(subRoot.getRightChild());
+			replaceTreeIfNeeded(subRoot.getLeftChild());
+		}
 	}
+	
+	private void makeRotation(Node node, RotationType type) {
+		Node newParent;
+		
+		switch(type) {
+		case ClockwiseSmall:
+			// right child will become new parent, parent will become left child
+			newParent = node.getRightChild();
+			// left child of new node will become right child of old root
+			node.setRightChild(newParent.getLeftChild());
+			if (node.getRightChild() != null) {
+				node.getRightChild().setParentNode(node);
+			}
+			
+			newParent.setParentNode(node.getParentNode());
+			// if parent is not null update it's child
+			// otherwise old parent is root node of the whole tree
+			if(newParent.getParentNode() != null) {
+				if (newParent.getData().compareTo(newParent.getParentNode().getData()) > 0) {
+					newParent.getParentNode().setRightChild(newParent);
+				} else {
+					newParent.getParentNode().setLeftChild(newParent);
+				}
+			} else {
+				root = newParent;
+			}
+			// old parent will become left child of new Parent
+			node.setParentNode(newParent);
+			newParent.setLeftChild(node);
+			break;
+		case ClockwiseBig:
+			// 1. step: rotate clockwise small node.leftChild
+			// 2. step:  rotate counter clockwise node
+			makeRotation(node.getLeftChild(), RotationType.ClockwiseSmall);
+			makeRotation(node, RotationType.CounterClockwiseSmall);
+			break;
+		case CounterClockwiseSmall:
+			// left child will become new parent, parent will become right child
+			newParent = node.getLeftChild();
+			// right child of new parent will become left child of old parent
+			node.setLeftChild(newParent.getRightChild());
+			if (node.getLeftChild() != null) {
+				node.getLeftChild().setParentNode(node);
+			}
+			
+			newParent.setParentNode(node.getParentNode());
+			// if parent is not null update left child
+			// otherwise old parent is root node of the whole tree
+			if (newParent.getParentNode() != null) {
+				if (newParent.getData().compareTo(newParent.getParentNode().getData()) > 0) {
+					newParent.getParentNode().setRightChild(newParent);
+				} else {
+					newParent.getParentNode().setLeftChild(newParent);
+				}
+			}  else {
+				root = newParent;
+			}
+			// old parent will become right child of new parent
+			node.setParentNode(newParent);
+			newParent.setRightChild(node);
+			break;
+		case CounterClockwiseBig:
+			// 1. step: rotate counter clockwise small node.rightChild
+			// 2. step: rotate clockwise small node
+			makeRotation(node.getRightChild(), RotationType.CounterClockwiseSmall);
+			makeRotation(node, RotationType.ClockwiseSmall);
+			break;
+			default:
+				return;
+		}
+	}
+	
 	
 	/**
 	 * Method to calculate the balance of the tree and all its subtrees
@@ -63,10 +198,9 @@ public class BinaryTree {
 		
 		int right = getDepthOfSubtree(node.getRightChild());
 		int left = getDepthOfSubtree(node.getLeftChild());
-		System.out.println("Right has depth: " + right);
-		System.out.println("Left has depth: " + left);
+		
 		node.setBalance(right - left);
-		System.out.println("Node with data: " + node.getData() + " has balance: " + node.getBalance());
+//		System.out.println("Node with data: " + node.getData() + " has balance: " + node.getBalance());
 		
 		calculateBalance(node.getRightChild());
 		calculateBalance(node.getLeftChild());
@@ -110,7 +244,7 @@ public class BinaryTree {
 				calculateBalance(root);
 				if (useAvl) {
 					// if AVL is active, re-balance the tree if needed
-					rebalanceTreeIfNeeded();
+					replaceTreeIfNeeded(root);
 				}
 			}
 			return wasAdded;
@@ -198,7 +332,7 @@ public class BinaryTree {
 			calculateBalance(root);
 			if (useAvl) {
 				// if AVL is active, re-balance the tree if needed
-				rebalanceTreeIfNeeded();
+				replaceTreeIfNeeded(root);
 			}
 		}
 		return deleted;
@@ -253,19 +387,25 @@ public class BinaryTree {
 
 				if (focusNode == root) {
 					root = focusNode.getLeftChild();
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getLeftChild());
+					parent.getLeftChild().setParentNode(parent);
 				} else {
 					parent.setRightChild(focusNode.getLeftChild());
+					parent.getRightChild().setParentNode(parent);
 				}
 				// only right child
 			} else if (focusNode.getLeftChild() == null) {
 				if (focusNode == root) {
 					root = focusNode.getRightChild();
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(focusNode.getRightChild());
+					parent.getLeftChild().setParentNode(parent);
 				} else {
 					parent.setRightChild(focusNode.getRightChild());
+					parent.getRightChild().setParentNode(parent);
 				}
 				// left and right child
 			} else {
@@ -273,12 +413,16 @@ public class BinaryTree {
 
 				if (focusNode == root) {
 					root = replacement;
+					root.setParentNode(null);
 				} else if (isItLeftChild) {
 					parent.setLeftChild(replacement);
+					replacement.setParentNode(parent);
 				} else {
 					parent.setRightChild(replacement);
+					replacement.setParentNode(parent);
 				}
 				replacement.setLeftChild(focusNode.getLeftChild());
+				replacement.getLeftChild().setParentNode(replacement);
 			}
 			
 			return true;
@@ -443,7 +587,14 @@ public class BinaryTree {
 
 		if (replacement != replacedNode.getRightChild()) {
 			replacementParent.setLeftChild(replacement.getRightChild());
+			if (replacementParent.getLeftChild() != null) {
+				replacementParent.getLeftChild().setParentNode(replacementParent);
+			}
+			
 			replacement.setRightChild(replacedNode.getRightChild());
+			if (replacement.getRightChild() != null ) {
+				replacement.getRightChild().setParentNode(replacement);
+			}
 		}
 		return replacement;
 	}
