@@ -107,7 +107,7 @@ public class ConsoleUI {
 		tree = BinaryTree.loadTreeFromFile(pathString);
 		
 		if (tree != null) {
-			System.out.println("Binary Tree was loaded successfully");
+			System.out.println("Tree was loaded successfully");
 		} else {
 			System.out.println("Failed to load tree from file");
 		}
@@ -207,7 +207,6 @@ public class ConsoleUI {
 	 * Function to remove a node from tree
 	 */
 	private static void deleteNode() {
-		// TODO implement logic
 		System.out.println("****** Remove node *******");
 		
 		if (tree == null) {
