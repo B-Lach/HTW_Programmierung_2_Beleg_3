@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.OutputStreamWriter;
-
+ 
 /**
  * binary tree class
  * 
@@ -40,7 +40,7 @@ public class BinaryTree {
 	// root node
 	private Node root;
 	// Boolean to identify if the tree behaves as an AVL tree
-	private Boolean useAvl;
+	protected Boolean useAvl;
 	// Encoding identifier for the file
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 	// File extension type
@@ -60,16 +60,20 @@ public class BinaryTree {
 				try {
 					// fetch data as List<String> from file
 					List<String> treeList = Files.readAllLines(path, ENCODING);
-					// validate content
-					if (validateFileContent(treeList)) { 
-						// create new tree
+					// create new tree
+					try {
 						BinaryTree tree = new BinaryTree(treeList);	
 						// store the current used path to be able to save to that file in the future again
 						tree.stringPath = stringPath;
-
-						return tree;
+						// validate content
+						return tree;	
+					} catch (Exception e) {
+						// Validation failed, so return null
+						return null;
 					}
+					
 				} catch (IOException e) {
+					// Failed to read data from file, so return null
 					return null;
 				}
 			}
@@ -121,7 +125,12 @@ public class BinaryTree {
 	 * Constructor to initialize a new BinaryTree instance with content from a file
 	 * @param fileContent The content of the file
 	 */
-	public BinaryTree(List<String> fileContent) {
+	public BinaryTree(List<String> fileContent) throws Exception {
+		
+		// Throw an exception if the content wasn't validated 
+		if (!BinaryTree.validateFileContent(fileContent)) {
+			throw new Exception("Content not valid exception");
+		}
 		// Setting the avl option first can result in a different tree as it was by saving to the file
 		// The saved data is already in the correct order
 		// Workflow is:
@@ -277,7 +286,6 @@ public class BinaryTree {
 		}
 	}
 	
-	
 	/**
 	 * Method to calculate the balance of the tree and all its subtrees
 	 * @param node The root node of the tree
@@ -317,7 +325,6 @@ public class BinaryTree {
 	 * Public method to add a new Node. Returns a boolean to identify if the new node was added. Returns false if the data is already part of the node.
 	 * @param data The data of the node to add
 	 * @return Boolean identifier if the node was added
->>>>>>> 1a8b4cc94af9bc3de860c8587c09915d23c71ca4
 	 */
 	public Boolean addNode(String data) {
 		// without a root node this will become root
@@ -605,13 +612,6 @@ public class BinaryTree {
 		}
 		return true;
 	}
-	public boolean avlSort(){
-		ArrayList<String> treeArray = new ArrayList<String>();
-		Node focusNode = root;
-		preorderTraverseTree(focusNode, treeArray);
-		
-		return true;
-	}
 	
 	/**
 	 * Method to add a valid file extension to a given path
@@ -642,7 +642,6 @@ public class BinaryTree {
  	 * @param replacedNode node that will be replaced
  	 * @return returns new node for the node that needed to be replaced
  	 */
-
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
