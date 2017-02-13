@@ -245,4 +245,153 @@ public class BinaryTreeTests {
 		File valid = new File("src/tests/resources/save_valid.btv");
 		assertTrue("Saving should return true", tree.saveTreeToFile(valid.getAbsolutePath()));
 	}
+	
+	@Test
+	public void test_smallClockwiseRotation() {
+		BinaryTree tree = new BinaryTree(true);
+		tree.addNode("50");
+		tree.addNode("60");
+		tree.addNode("70");
+		// 60 should be the root node now
+		assertTrue("Data of root is not correct", tree.getRootNode().getData() == "60");
+		// balance of root should be 0
+		assertTrue("Balance is not correct", tree.getRootNode().getBalance() == 0);
+		assertNull("Root should not have a parent", tree.getRootNode().getParentNode());
+		// left child should be 50 now
+		assertNotNull("Root must have a left child", tree.getRootNode().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getData() == "50");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getParentNode().getData() == "60");
+		assertTrue("Balance of left child is not correct", tree.getRootNode().getLeftChild().getBalance() == 0);
+		assertNull("Left child of left leaf has to be null", tree.getRootNode().getLeftChild().getLeftChild());
+		assertNull("Right child of left leaf has to be null", tree.getRootNode().getLeftChild().getRightChild());
+		// right child should be 70 now
+		assertNotNull("Root must have a rightchild",tree.getRootNode().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getData() == "70");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getParentNode().getData() == "60");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getBalance() == 0);
+		assertNull("Left child of right leaf has to be null", tree.getRootNode().getRightChild().getLeftChild());
+		assertNull("Right child of right leaf has to be null", tree.getRootNode().getRightChild().getRightChild());
+	}
+	
+	@Test
+	public void test_smallCounterClockwiseRotation() {
+		BinaryTree tree = new BinaryTree(true);
+		tree.addNode("50");
+		tree.addNode("40");
+		tree.addNode("30");
+		// 60 should be the root node now
+		assertTrue("Data of root is not correct", tree.getRootNode().getData() == "40");
+		assertTrue("Balance is not correct", tree.getRootNode().getBalance() == 0);
+		assertNull("Root should not have a parent", tree.getRootNode().getParentNode());
+		// left child should be 50 now
+		assertNotNull("Root must have a left child", tree.getRootNode().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getData() == "30");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getParentNode().getData() == "40");
+		assertTrue("Balance of left child is not correct", tree.getRootNode().getLeftChild().getBalance() == 0);
+		assertNull("Left child of left leaf has to be null", tree.getRootNode().getLeftChild().getLeftChild());
+		assertNull("Right child of left leaf has to be null", tree.getRootNode().getLeftChild().getRightChild());
+		// right child should be 70 now
+		assertNotNull("Root must have a rightchild",tree.getRootNode().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getData() == "50");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getParentNode().getData() == "40");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getBalance() == 0);
+		assertNull("Left child of right leaf has to be null", tree.getRootNode().getRightChild().getLeftChild());
+		assertNull("Right child of right leaf has to be null", tree.getRootNode().getRightChild().getRightChild());
+	}
+	
+	@Test
+	public void test_bigCounterClockwiseRotation() {
+		BinaryTree tree = new BinaryTree(true);
+		tree.addNode("70");
+		tree.addNode("60");
+		tree.addNode("85");
+		tree.addNode("90");
+		tree.addNode("80");
+		tree.addNode("83");
+		// just a visual help
+		tree.printTree();
+		
+		// 60 should be the root node now
+		assertTrue("Data of root is not correct", tree.getRootNode().getData() == "80");
+		assertTrue("Balance is not correct", tree.getRootNode().getBalance() == 0);
+		assertNull("Root should not have a parent", tree.getRootNode().getParentNode());
+		// left child of root should be 70 now
+		assertNotNull("Root must have a left child", tree.getRootNode().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getData() == "70");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getParentNode().getData() == "80");
+		assertTrue("Balance of left child is not correct", tree.getRootNode().getLeftChild().getBalance() == -1);
+		// left child of 70 should be 60
+		assertNotNull("Left child of left should not be null", tree.getRootNode().getLeftChild().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getLeftChild().getData() == "60");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getLeftChild().getParentNode().getData() == "70");
+		assertTrue("Balance of left leaf is not correct", tree.getRootNode().getLeftChild().getLeftChild().getBalance() == 0);
+		assertNull("Leaf node should not have children",tree.getRootNode().getLeftChild().getLeftChild().getLeftChild());
+		// right child of 70 should be null		
+		assertNull("Right child of left should be null", tree.getRootNode().getLeftChild().getRightChild());
+		// right child of root should be 85
+		assertNotNull("Root must have a right child",tree.getRootNode().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getData() == "85");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getParentNode().getData() == "80");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getBalance() == 0);
+		// left child of 85 should be 83
+		assertNotNull("Left child of 85 should not be null", tree.getRootNode().getRightChild().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getRightChild().getLeftChild().getData() == "83");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getLeftChild().getParentNode().getData() == "85");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getLeftChild().getBalance() == 0);
+		assertNull("Leaf node should not have children", tree.getRootNode().getRightChild().getLeftChild().getLeftChild());
+		// right child of 85 should be 90
+		assertNotNull("Right child of 85 should not be null", tree.getRootNode().getRightChild().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getData() == "90");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getParentNode().getData() == "85");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getBalance() == 0);
+		assertNull("Leaf node should not have children",tree.getRootNode().getRightChild().getRightChild().getLeftChild());
+	}
+	
+	@Test
+	public void test_bigClockwiseRotation() {
+		BinaryTree tree = new BinaryTree(true);
+		tree.addNode("40");
+		tree.addNode("42");
+		tree.addNode("05");
+		tree.addNode("20");
+		tree.addNode("01");
+		tree.addNode("10");
+		// just a visual help
+		tree.printTree();
+		
+		// 20 should be the root node now
+		assertTrue("Data of root is not correct", tree.getRootNode().getData() == "20");
+		assertTrue("Balance is not correct", tree.getRootNode().getBalance() == 0);
+		assertNull("Root should not have a parent", tree.getRootNode().getParentNode());
+		// left child of root should be 05 now
+		assertNotNull("Root must have a left child", tree.getRootNode().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getData() == "05");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getParentNode().getData() == "20");
+		assertTrue("Balance of left child is not correct", tree.getRootNode().getLeftChild().getBalance() == 0);
+		// left child of 05 should be 01
+		assertNotNull("Left child of left should not be null", tree.getRootNode().getLeftChild().getLeftChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getLeftChild().getData() == "01");
+		assertTrue("Parent of left child is not correct", tree.getRootNode().getLeftChild().getLeftChild().getParentNode().getData() == "05");
+		assertTrue("Balance of left leaf is not correct", tree.getRootNode().getLeftChild().getLeftChild().getBalance() == 0);
+		assertNull("Leaf node should not have children",tree.getRootNode().getLeftChild().getLeftChild().getLeftChild());
+		// right child of 05 should be 10		
+		assertNotNull("Right child of left should not be null", tree.getRootNode().getLeftChild().getRightChild());
+		assertTrue("Data of left child is not correct", tree.getRootNode().getLeftChild().getRightChild().getData() == "10");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getLeftChild().getRightChild().getParentNode().getData() == "05");
+		assertTrue("Balance of right leaf is not correct", tree.getRootNode().getLeftChild().getRightChild().getBalance() == 0);
+		assertNull("Leaf node should not have children",tree.getRootNode().getLeftChild().getRightChild().getLeftChild());
+		// right child of root should be 40
+		assertNotNull("Root must have a right child",tree.getRootNode().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getData() == "40");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getParentNode().getData() == "20");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getBalance() == 1);
+		// left child of 40 should be null
+		assertNull("Left child of 20 should be null", tree.getRootNode().getRightChild().getLeftChild());
+		// right child of 40 should be 42
+		assertNotNull("Right child of 85 should not be null", tree.getRootNode().getRightChild().getRightChild());
+		assertTrue("Data of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getData() == "42");
+		assertTrue("Parent of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getParentNode().getData() == "40");
+		assertTrue("Balance of right child is not correct", tree.getRootNode().getRightChild().getRightChild().getBalance() == 0);
+		assertNull("Leaf node should not have children",tree.getRootNode().getRightChild().getRightChild().getLeftChild());
+	}
 }
