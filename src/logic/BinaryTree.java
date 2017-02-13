@@ -587,6 +587,8 @@ public class BinaryTree {
 	 * @return returns true if successful
 	 */
 	public Boolean saveTreeToFile(String stringPath) {
+		// null is not valid
+		if(stringPath == null) {return false;}
 		// check if the given path is valid
 		// if it isn't add the valid file extension
 		if(!pathIsValid(stringPath)) {
@@ -604,7 +606,8 @@ public class BinaryTree {
 			try {
 				Files.createFile(storePath);
 			} catch (IOException e) {
-				e.printStackTrace();
+				// The user really do not want to see this output
+//				e.printStackTrace();
 				return false;
 			}
 		}
@@ -619,8 +622,8 @@ public class BinaryTree {
 			this.stringPath = stringPath;
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
-
-			e.printStackTrace();
+			// The user really do not want to see this output
+//			e.printStackTrace();
 			return false;
 		}
 		return true;
