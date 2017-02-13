@@ -43,6 +43,10 @@ public class BinaryTree {
 	protected Boolean useAvl;
 	// Encoding identifier for the file
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	// min length of a data string
+	final static int MIN_LENGTH = 1;
+	// max length of a data string
+	final static int MAX_LENGTH = 3;
 	// File extension type
 	public final static String FILE_EXTENSION = "btv";
 	
@@ -327,8 +331,14 @@ public class BinaryTree {
 	 * @return Boolean identifier if the node was added
 	 */
 	public Boolean addNode(String data) {
-		// without a root node this will become root
+		// null is not valid
+		if (data == null) { return false;}
+		// check that data matches the min and max criteria 
+		if(data.length() > MAX_LENGTH || data.length() < MIN_LENGTH) {
+			return false;
+		}
 
+		// without a root node this will become root
 		if (root == null) {
 			Node newNode = new Node(data);
 			root = newNode;
@@ -448,7 +458,9 @@ public class BinaryTree {
 	 * @return returns true if deletion was successful and false if it was not
 	 */
 	private boolean _deleteNode(String data) {
-
+		// Null is not valid
+		if (data == null) { return false; }
+		
 		Node focusNode = root;
 		Node parent = root;
 
@@ -539,7 +551,8 @@ public class BinaryTree {
 	 * @return returns the searched node
 	 */
 	public Node findNode(String data) {
-
+		// null is not valid
+		if(data == null) { return null;}
 		// starts at top of the tree
 		Node focusNode = root;
 
