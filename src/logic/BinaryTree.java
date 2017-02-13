@@ -410,7 +410,6 @@ public class BinaryTree {
 				// check if a duplicate node is being added
 			} else {
 				if (data.compareTo(focusNode.getData()) == 0) {
-					System.out.println("add: no duplicate nodes allowed");
 					return false;
 				}
 			}
@@ -541,7 +540,6 @@ public class BinaryTree {
 			
 			return true;
 		}
-		System.out.println("delete: node not found");
 		return false;
 	}
 	
@@ -650,7 +648,6 @@ public class BinaryTree {
 
 			preorderTraverseTree(focusNode.getRightChild(), list);
 		}
-		System.out.println(list.toString());
 	}
  	
  	/**
