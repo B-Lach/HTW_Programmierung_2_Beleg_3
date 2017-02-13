@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
 import logic.*;
 
@@ -194,10 +196,53 @@ public class BinaryTreeTests {
 		
 		assertNull("Found null node", tree.findNode(null));
 	}
+	
+	@Test
 	public void test_findValidNode() {
 		BinaryTree tree = new BinaryTree(false);
 		tree.addNode("90");
 		
 		assertNotNull("Found invalid node", tree.findNode("90"));
+	}
+	
+	@Test
+	public void test_stringPathWithoutFile() {
+		BinaryTree tree = new BinaryTree(false);
+		assertNull("String path should be null", tree.getStringPath());
+	}
+	
+	@Test
+	public void test_stringPathWithFile() {
+		File valid = new File("src/tests/resources/valid.btv");
+		BinaryTree tree = BinaryTree.loadTreeFromFile(valid.getAbsolutePath());
+		// loading from file should set path automatically
+		assertNotNull("String path should be null", tree.getStringPath());
+		// stored path has to be equal to the used path
+		assertTrue("Paths are not equal", tree.getStringPath().compareTo(valid.getAbsolutePath()) == 0);
+	}
+	
+	@Test
+	public void test_saveToNullFile() {
+		BinaryTree tree = new BinaryTree(false);
+		tree.addNode("50");
+
+		assertFalse("Saving to null should return false", tree.saveTreeToFile(null));
+	}
+	
+	@Test
+	public void test_saveToInvalidFile() {
+		BinaryTree tree = new BinaryTree(false);
+		tree.addNode("50");
+
+		assertFalse("Saving should return false", tree.saveTreeToFile("/this&is?not/valid"));
+	}
+	
+	@Test
+	public void test_saveToValidFile() {
+		BinaryTree tree = new BinaryTree(false);
+		tree.addNode("50");
+		
+		File valid = new File("src/tests/resources/save_valid.btv");
+		assertTrue("Saving should return true", tree.saveTreeToFile(valid.getAbsolutePath()));
 	}
 }
