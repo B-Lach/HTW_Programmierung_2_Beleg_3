@@ -86,7 +86,7 @@ public class BinaryTree {
 	 * @param path The path to check
 	 * @return True if the path is valid. Otherwise false
 	 */
-	private static Boolean pathIsValid(String path) {
+	public static Boolean pathIsValid(String path) {
 		return path.endsWith("." + FILE_EXTENSION);
 	}
 	
@@ -95,7 +95,7 @@ public class BinaryTree {
 	 * @param content The content to validate
 	 * @return True if content is valid. Otherwise false
 	 */
-	private static Boolean validateFileContent(List<String> content) {
+	public static Boolean validateFileContent(List<String> content) {
 		for(int i = 0; i < content.size(); i++) {
 			String s = content.get(i);
 			// fist string has to be an string representation of the AVL option
