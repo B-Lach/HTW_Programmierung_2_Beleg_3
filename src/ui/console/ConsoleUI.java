@@ -3,6 +3,7 @@ package ui.console;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import logic.BinaryTree;
 import ui.console.input.InputHandler;
@@ -16,7 +17,7 @@ import ui.console.validation.StringValidator;
  */
 public class ConsoleUI {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
-
+	private final static Scanner scanner = new Scanner(System.in);
 	private static BinaryTree tree;
 	
 	/**
@@ -27,7 +28,7 @@ public class ConsoleUI {
 		
 		while (!quit) {
 			showMainMenu();
-			int option = InputHandler.getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole(scanner);
 			
 			if (option < 1 || option > 3) {
 				logWrongInput();
@@ -56,7 +57,7 @@ public class ConsoleUI {
 		
 		while(!back) {
 			showIOMenu();
-			int option = InputHandler.getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole(scanner);
 			
 			if (option < 1 || option > 5) {
 				logWrongInput();
@@ -86,7 +87,7 @@ public class ConsoleUI {
 	 * Function to create a tree from user input
 	 */
 	private static void createTree() {
-		Boolean useAvl = InputHandler.getBooleanInput("Do you want to initialize an AVL Tree? [y/n]", "y");
+		Boolean useAvl = InputHandler.getBooleanInput(scanner, "Do you want to initialize an AVL Tree? [y/n]", "y");
 		tree = new BinaryTree(useAvl);
 				
 		System.out.println("Tree was generated!");
@@ -101,7 +102,7 @@ public class ConsoleUI {
 		
 				
 		// fetch path string from console and commit path to binary tree object for handling
-		String pathString = InputHandler.getStringInput();
+		String pathString = InputHandler.getStringInput(scanner);
 		if (pathString.equals("quit")) { return; }
 		
 		tree = BinaryTree.loadTreeFromFile(pathString);
@@ -135,7 +136,7 @@ public class ConsoleUI {
 			System.out.println("****** Save to file ******");
 			System.out.print("Input path to the file\n<quit> to cancel:");
 			
-			String pathString = InputHandler.getStringInput();
+			String pathString = InputHandler.getStringInput(scanner);
 			
 			if (!pathString.equals("quit")) {
 				if (tree.saveTreeToFile(pathString)) {
@@ -155,7 +156,7 @@ public class ConsoleUI {
 		
 		while(!back) {
 			showManipulationMenu();
-			int option = InputHandler.getSelectionFromConsole();
+			int option = InputHandler.getSelectionFromConsole(scanner);
 			
 			if (option < 1 || option > 4) {
 				logWrongInput();
@@ -186,7 +187,7 @@ public class ConsoleUI {
 		// if tree is null, we have to initialize one first
 		if (tree == null ) { createTree();}
 		System.out.print("Type the data you want to add\n<quit> to cancel:");
-		String input = InputHandler.getStringInput();
+		String input = InputHandler.getStringInput(scanner);
 		
 		StringValidationType validation = StringValidator.validateString(input, "quit", true);
 		
@@ -214,7 +215,7 @@ public class ConsoleUI {
 			return;
 		}
 		System.out.print("Type the data you want to delete\n<quit> to cancel:");
-		String input = InputHandler.getStringInput();
+		String input = InputHandler.getStringInput(scanner);
 		
 		StringValidationType validation = StringValidator.validateString(input, "quit", false);
 		if (validation == StringValidationType.Correct) {
@@ -234,7 +235,7 @@ public class ConsoleUI {
 	private static void deleteTree() {
 		if (tree != null) {
 			System.out.println("****** Delete tree *******");
-			if(InputHandler.getBooleanInput("Do you want to delete the tree? [y/n]", "y")){
+			if(InputHandler.getBooleanInput(scanner, "Do you want to delete the tree? [y/n]", "y")){
 				tree.deleteAll();
 				System.out.println("Tree was deleted");
 			}

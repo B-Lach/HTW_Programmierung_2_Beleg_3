@@ -1,5 +1,7 @@
 package ui.console.validation;
 
+import java.util.Scanner;
+
 import ui.console.input.InputHandler;
 
 /**
@@ -34,7 +36,7 @@ public class StringValidator {
 		if (input.length() > 3) {
 			// shrinking is accepted
 			if (shrink) {
-				if (InputHandler.getBooleanInput("The string is to long. Do you want to auto shring the string to 3 characters? [y/n]", "y")) {
+				if (InputHandler.getBooleanInput(new Scanner(System.in),"The string is to long. Do you want to auto shring the string to 3 characters? [y/n]", "y")) {
 					return StringValidationType.ShrinkInput;
 				}
 			}
