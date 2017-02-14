@@ -41,7 +41,11 @@ public class Line  extends JPanel {
 		
 		setSize(width, height);				
 	}
+	
 
+	/**
+	 * Overridden paintComponent(Graphics g) method to do custom painting
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);

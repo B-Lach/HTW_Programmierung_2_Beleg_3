@@ -41,14 +41,17 @@ public class TreeNode extends JPanel {
 		g.drawString(data, x, y);
 	}
 	
+	/**
+	 * Overridden paintComponent(Graphics g) method to do custom painting
+	 */
 	@Override
     protected void paintComponent(Graphics g) {
 		// draw the node
 		g.setColor(Color.orange);
         g.fillOval(0, 0, g.getClipBounds().width, g.getClipBounds().height);
-        // draw the data centered on the node 
+         
         g.setColor(Color.black);
-        
+        // draw the data centered on the node
         addString(g);
     }
 }
