@@ -577,15 +577,7 @@ public class BinaryTree {
 	}
 
 	/**
-	 * root node getter
-	 * @return returns root node
-	 */
-	public Node getRootNode() {
-		return root;
-	}
-
-	/**
-	 * method to get the root node of the binary tree
+	 * Method to get the root node of the binary tree
 	 * 
 	 * @return returns root node
 	 */
@@ -593,43 +585,7 @@ public class BinaryTree {
 		return root;
 	}
 
-	/**
-	 * method to load a tree from a .btv file
-	 * 
-	 * @param stringPath
-	 *            file path to the binary tree file
-	 * @return returns true if loading the tree from the file was successful
-	 */
-	public Boolean loadTreeFromFile(String stringPath) {
-		// check if the file to load is valid
-		if (pathIsValid(stringPath)) {
-			Path path = Paths.get(stringPath);
-
-			if (Files.isReadable(path)) {
-				try {
-					// fetch data as List<String> from file
-					List<String> treeList = Files.readAllLines(path, ENCODING);
-					// validate content
-					if (validateFileContent(treeList)) {
-						// clear current stored hierarchy
-						deleteAll();
-						// create new tree
-						for (String data : treeList) {
-							addNode(data);
-						}
-						// store the current used path to be able to save to
-						// that file in the future again
-						this.stringPath = stringPath;
-
-						return true;
-					}
-				} catch (IOException e) {
-					return false;
-				}
-			}
-		}
-		return false;
-	}
+	
 
 	/**
 	 * method to save a binary tree to a .btv file
