@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
  *
  */
 public class BinaryTree {
+  
 	/**
 	 * Enum to identify which rotation has to be performed to re-balance the tree,
 	 * @author Benny Lach
@@ -151,9 +152,11 @@ public class BinaryTree {
 	
 	/**
 	 * Method to get the current path of the used file
-	 * @return The path to the current used file. Is null, if there is no path available
+	 * 
+	 * @return The path to the current used file. Is null, if there is no path
+	 *         available
 	 */
-	public String getStringPath(){
+	public String getStringPath() {
 		return stringPath;
 	}
 	
@@ -542,6 +545,7 @@ public class BinaryTree {
 		}
 		return false;
 	}
+
 	
 	/**
 	 * method for searching for a specific node
@@ -571,6 +575,7 @@ public class BinaryTree {
 		}
 		return focusNode;
 	}
+
 	/**
 	 * root node getter
 	 * @return returns root node
@@ -578,28 +583,81 @@ public class BinaryTree {
 	public Node getRootNode() {
 		return root;
 	}
-	
+
 	/**
-	 * method for saving the binary tree to a file
-	 * @param stringPath path to the file
-	 * @return returns true if successful
+	 * method to get the root node of the binary tree
+	 * 
+	 * @return returns root node
+	 */
+	public Node getRootNode() {
+		return root;
+	}
+
+	/**
+	 * method to load a tree from a .btv file
+	 * 
+	 * @param stringPath
+	 *            file path to the binary tree file
+	 * @return returns true if loading the tree from the file was successful
+	 */
+	public Boolean loadTreeFromFile(String stringPath) {
+		// check if the file to load is valid
+		if (pathIsValid(stringPath)) {
+			Path path = Paths.get(stringPath);
+
+			if (Files.isReadable(path)) {
+				try {
+					// fetch data as List<String> from file
+					List<String> treeList = Files.readAllLines(path, ENCODING);
+					// validate content
+					if (validateFileContent(treeList)) {
+						// clear current stored hierarchy
+						deleteAll();
+						// create new tree
+						for (String data : treeList) {
+							addNode(data);
+						}
+						// store the current used path to be able to save to
+						// that file in the future again
+						this.stringPath = stringPath;
+
+						return true;
+					}
+				} catch (IOException e) {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * method to save a binary tree to a .btv file
+	 * 
+	 * @param stringPath
+	 *            file path to the location of the save file
+	 * @return returns true if saving the tree was successful
 	 */
 	public Boolean saveTreeToFile(String stringPath) {
 		// null is not valid
 		if(stringPath == null) {return false;}
 		// check if the given path is valid
 		// if it isn't add the valid file extension
-		if(!pathIsValid(stringPath)) {
+		if (!pathIsValid(stringPath)) {
 			stringPath = addValidFileExtension(stringPath);
 		}
 		Node focusNode = root;
 
+		// arrayList for storing the content of the binary tree
 		ArrayList<String> treeArray = new ArrayList<String>();
+
 		preorderTraverseTree(focusNode, treeArray);
 		Path storePath = Paths.get(stringPath);
+
 		// add the AVL option to the content
 		treeArray.add(0, useAvl == true? "true": "false");
-		
+
+		// creates writable file
 		if (!Files.isWritable(storePath)) {
 			try {
 				Files.createFile(storePath);
@@ -610,13 +668,15 @@ public class BinaryTree {
 			}
 		}
 
+		// writes data from the arrayList into the file
 		try {
 			PrintWriter writer = new PrintWriter(new FileWriter(storePath.toString()));
 			for (String s : treeArray) {
 				writer.println(s);
 			}
 			writer.close();
-			// store the current used path to be able to save to that file in the future again
+			// store the current used path to be able to save to that file in
+			// the future again
 			this.stringPath = stringPath;
 		} catch (IOException e) {
 			System.out.println("Failed to create FileWriter: " + e);
@@ -626,22 +686,28 @@ public class BinaryTree {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Method to add a valid file extension to a given path
-	 * @param path The path to add the file extension
+	 * 
+	 * @param path
+	 *            The path to add the file extension
 	 * @return The path with valid extension
 	 */
-	private String addValidFileExtension(String path) {	
+	private String addValidFileExtension(String path) {
 		return path += "." + FILE_EXTENSION;
 	}
-	
+
 	/**
-	 * method for iterating through the tree
-	 * @param focusNode start of the iteration
-	 * @param list list where all the nodes will be saved
+	 * method for traversing the tree from root to the smallest number and then
+	 * to the biggest number
+	 * 
+	 * @param focusNode
+	 *            start point for traversing the tree
+	 * @param list
+	 *            list for saving the node values
 	 */
- 	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
+	private void preorderTraverseTree(Node focusNode, ArrayList<String> list) {
 		if (focusNode != null && list != null) {
 			list.add(focusNode.getData());
 			preorderTraverseTree(focusNode.getLeftChild(), list);
@@ -649,12 +715,14 @@ public class BinaryTree {
 			preorderTraverseTree(focusNode.getRightChild(), list);
 		}
 	}
- 	
- 	/**
- 	 * private helper method for the node deletion method
- 	 * @param replacedNode node that will be replaced
- 	 * @return returns new node for the node that needed to be replaced
- 	 */
+
+	/**
+	 * helper method for delete method
+	 * 
+	 * @param replacedNode
+	 *            node that needs to be replaced in the tree
+	 * @return returns replacement node
+	 */
 	private Node getReplacementNode(Node replacedNode) {
 		Node replacementParent = replacedNode;
 		Node replacement = replacedNode;
@@ -679,77 +747,88 @@ public class BinaryTree {
 		}
 		return replacement;
 	}
-	
+
 	/**
-	 * Method to print the tree on console
-	 * Inspired by http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram
+	 * Method to print the tree on console Inspired by
+	 * http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram
 	 */
 	public void printTree() {
 		System.out.println("\n\n\n");
 		// empty tree found
 		if (root == null) {
-        	System.out.println("Tree is empty");
-        } else {
-        	OutputStreamWriter writer = new OutputStreamWriter(System.out);
-        	
-        	if (root.getRightChild() != null) {
-            	printTree(writer, root.getRightChild(), true, "");
-            }
-            printNodeValue(writer, root);
-            if (root.getLeftChild() != null) {
-                printTree(writer, root.getLeftChild(), false, "");
-            }
-        }
-        System.out.println("\n\n\n");
+			System.out.println("Tree is empty");
+		} else {
+			OutputStreamWriter writer = new OutputStreamWriter(System.out);
+
+			if (root.getRightChild() != null) {
+				printTree(writer, root.getRightChild(), true, "");
+			}
+			printNodeValue(writer, root);
+			if (root.getLeftChild() != null) {
+				printTree(writer, root.getLeftChild(), false, "");
+			}
+		}
+		System.out.println("\n\n\n");
 	}
-    
-    // use string and not stringbuffer on purpose as we need to change the indent at each recursion
+
+	// use string and not stringbuffer on purpose as we need to change the
+	// indent at each recursion
 	/**
 	 * Private Method to print the tree on console using an OutputStreamWriter
-	 * @param writer The OutputStreamWriter object to use
-	 * @param root The current root node to print
-	 * @param isRight Boolean value to identify if the current node is right child 
-	 * @param indent The current indent string
+	 * 
+	 * @param writer
+	 *            The OutputStreamWriter object to use
+	 * @param root
+	 *            The current root node to print
+	 * @param isRight
+	 *            Boolean value to identify if the current node is right child
+	 * @param indent
+	 *            The current indent string
 	 */
-    private void printTree(OutputStreamWriter writer, Node root, boolean isRight, String indent) {
-        // right child not null
-    	if (root.getRightChild() != null) {
-        	printTree(writer, root.getRightChild(), true, indent + (isRight ? "        " : " |      "));
-        }
-    	// write current node
-        try {
-        	writer.write(indent);
-            if (isRight) {
-                writer.write(" /");
-            } else {
-                writer.write(" \\");
-            }
-            writer.write("----- ");
-            writer.flush();
-        } catch (Exception e) {}
-        
-        printNodeValue(writer, root);
-        // left child not null
-        if (root.getLeftChild() != null) {
-            printTree(writer, root.getLeftChild(), false, indent + (isRight ? " |      " : "        "));
-        }
-    }
-    
-    /**
-     * Private method to print a node's value to an OutputStreamWriter
-     * @param out The OutputStreamWriter to use
-     * @param node The node to print
-     */
-    private void printNodeValue(OutputStreamWriter out, Node node) {
-    	try {
-    		// node is null
-    		if (node == null) {
-                out.write("<null>");
-            } else {
-                out.write(node.getData());
-            }
-            out.write('\n');
-            out.flush();
-    	} catch (Exception e) {}
-    }
+	private void printTree(OutputStreamWriter writer, Node root, boolean isRight, String indent) {
+		// right child not null
+		if (root.getRightChild() != null) {
+			printTree(writer, root.getRightChild(), true, indent + (isRight ? "        " : " |      "));
+		}
+		// write current node
+		try {
+			writer.write(indent);
+			if (isRight) {
+				writer.write(" /");
+			} else {
+				writer.write(" \\");
+			}
+			writer.write("----- ");
+			writer.flush();
+		} catch (Exception e) {
+		}
+
+		printNodeValue(writer, root);
+		// left child not null
+		if (root.getLeftChild() != null) {
+			printTree(writer, root.getLeftChild(), false, indent + (isRight ? " |      " : "        "));
+		}
+	}
+
+	/**
+	 * Private method to print a node's value to an OutputStreamWriter
+	 * 
+	 * @param out
+	 *            The OutputStreamWriter to use
+	 * @param node
+	 *            The node to print
+	 */
+	private void printNodeValue(OutputStreamWriter out, Node node) {
+		try {
+			// node is null
+			if (node == null) {
+				out.write("<null>");
+			} else {
+				out.write(node.getData());
+			}
+			out.write('\n');
+			out.flush();
+		} catch (Exception e) {
+		}
+	}
 }
