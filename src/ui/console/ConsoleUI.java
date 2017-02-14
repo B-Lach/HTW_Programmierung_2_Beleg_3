@@ -189,7 +189,7 @@ public class ConsoleUI {
 		System.out.print("Type the data you want to add\n<quit> to cancel:");
 		String input = InputHandler.getStringInput(scanner);
 		
-		StringValidationType validation = StringValidator.validateString(input, "quit", true);
+		StringValidationType validation = StringValidator.validateString(scanner, input, "quit", true);
 		
 		if(validation == StringValidationType.ShrinkInput) {
 			input = input.substring(0, 3);
@@ -217,7 +217,7 @@ public class ConsoleUI {
 		System.out.print("Type the data you want to delete\n<quit> to cancel:");
 		String input = InputHandler.getStringInput(scanner);
 		
-		StringValidationType validation = StringValidator.validateString(input, "quit", false);
+		StringValidationType validation = StringValidator.validateString(scanner, input, "quit", false);
 		if (validation == StringValidationType.Correct) {
 			if (tree.deleteNode(input)) {
 				System.out.println("Node with String <" + input + "> was deleted.");
