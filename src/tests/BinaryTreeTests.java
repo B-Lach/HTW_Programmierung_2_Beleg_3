@@ -8,7 +8,7 @@ import org.junit.Test;
 import logic.*;
 
 /**
- * Tests for instance methods of a BinaryTree object
+ * Class to test all the methods of a BinaryTree instance 
  * @author Benny Lach
  *
  */

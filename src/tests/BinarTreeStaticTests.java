@@ -9,6 +9,11 @@ import org.junit.Test;
 
 import logic.BinaryTree;
 
+/**
+ * Class to test all the static functions of the BinaryTree class
+ * @author Benny Lach
+ *
+ */
 public class BinarTreeStaticTests {
 
 	@Test

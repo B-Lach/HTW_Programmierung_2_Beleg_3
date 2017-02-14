@@ -3,6 +3,11 @@ package tests;
 import java.util.List;
 import logic.*;
 
+/**
+ * Helper Class to mimic functionality needed for testing. Use it only for testing!
+ * @author Benny Lach
+ *
+ */
 public class BinaryTreeMock extends BinaryTree {
 	
 	public BinaryTreeMock(Boolean useAvl) {

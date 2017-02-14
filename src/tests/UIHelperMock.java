@@ -14,10 +14,14 @@ public class UIHelperMock extends UIHelper {
 	@Override
 	protected void showConsoleOutput() {
 		type = UIType.Console;
+		
+		super.showConsoleOutput();
 	}
 	
 	@Override
 	protected void showGraphicOutput() {
 		type = UIType.Graphic;
+		
+		super.showGraphicOutput();
 	}
 }

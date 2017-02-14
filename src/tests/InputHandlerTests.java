@@ -9,6 +9,11 @@ import org.junit.Test;
 
 import ui.console.input.*;
 
+/**
+ * Class to test all the functions of the InputHandler class 
+ * @author Benny Lach
+ *
+ */
 public class InputHandlerTests {
 
 	@Test

@@ -3,12 +3,16 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Scanner;
 
 import org.junit.Test;
 import ui.console.validation.*;
 
+/**
+ * Class to test StringValidator logic
+ * @author Benny Lach
+ *
+ */
 public class StringValidatorTests {
 	
 	@Test
@@ -37,8 +41,6 @@ public class StringValidatorTests {
 	
 	@Test
 	public void test_stringToLongAndShrinkValidation() {
-		InputStream original_in = System.in;
-		
 		// Simulate user input - yes input 
 		ByteArrayInputStream in = new ByteArrayInputStream("y\r\n".getBytes());
 		
@@ -56,8 +58,6 @@ public class StringValidatorTests {
 		
 		type = StringValidator.validateString(new Scanner(in), "tolong", null, true);
 		assertEquals("Validation is not CancelSequence", StringValidationType.CancelSequence, type);
-		
-		System.setIn(original_in);
 	}
 	
 	@Test

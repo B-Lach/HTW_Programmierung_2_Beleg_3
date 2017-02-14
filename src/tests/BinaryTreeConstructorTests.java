@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import org.junit.Test;
 import logic.*;
 
+/**
+ * Class to test all the constructor of the BinaryTree class
+ * @author Benny Lach
+ *
+ */
 public class BinaryTreeConstructorTests {
 
 	@Test
