@@ -2,6 +2,11 @@ package ui.console.input;
 
 import java.util.Scanner;
 
+/**
+ * Class to handle User input made on console
+ * @author Benny Lach
+ *
+ */
 public class InputHandler {
 	/**
 	 * Function to get user selection from console

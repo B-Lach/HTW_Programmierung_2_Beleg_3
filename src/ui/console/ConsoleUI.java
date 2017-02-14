@@ -16,8 +16,11 @@ import ui.console.validation.StringValidator;
  *
  */
 public class ConsoleUI {
+	// Encoding used to read a file
 	final static Charset ENCODING = StandardCharsets.UTF_8;
+	// Scanner instance used where needed
 	private final static Scanner scanner = new Scanner(System.in);
+	// The BinaryTree instance
 	private static BinaryTree tree;
 	
 	/**
@@ -99,8 +102,7 @@ public class ConsoleUI {
 	private static void loadTreeFromFile() {
 		System.out.println("******* Load tree ********");
 		System.out.print("Input path to the file you want to load.\n<quit> to cancel:");
-		
-				
+			
 		// fetch path string from console and commit path to binary tree object for handling
 		String pathString = InputHandler.getStringInput(scanner);
 		if (pathString.equals("quit")) { return; }

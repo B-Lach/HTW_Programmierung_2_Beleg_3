@@ -9,6 +9,10 @@ import ui.graphical.*;
  *
  */
 public class UIHelper {
+	/**
+	 * Method to start the program with a given UIType
+	 * @param type The type to visualize the program
+	 */
 	public void startProgram(UIType type) {
 		if (type == null) {
 			System.out.println("Null is not a valid UIType");
@@ -36,7 +40,7 @@ public class UIHelper {
 	}
 	
 	/**
-	 * Method to load th graphical ui
+	 * Method to load the graphical ui
 	 */
 	protected void showGraphicOutput() {
 		GraphilcalUI.becomeVisible();
