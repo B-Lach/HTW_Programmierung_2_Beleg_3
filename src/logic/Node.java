@@ -1,4 +1,5 @@
 package logic;
+
 /**
  * class for binary tree node object
  * @author Rico Stucke
@@ -10,6 +11,8 @@ public class Node {
 	
 	private Node leftChild;
 	private Node rightChild;
+	private Node parentNode;
+	private int balance;
 	
 	/**
 	 * constructor for binary tree node
@@ -20,7 +23,13 @@ public class Node {
 	}
 	
 	// setter
+	protected void setBalance(int balance){
+		this.balance = balance;
+	}
 	
+	protected void setParentNode(Node node){
+		parentNode = node;
+	}
 	protected void setLeftChild(Node node) {
 		leftChild = node;
 	}
@@ -29,7 +38,10 @@ public class Node {
 		rightChild = node;
 	}
 	
-	// getters
+	// getter
+	public Node getParentNode(){
+		return parentNode;
+	}
 	public Node getLeftChild() {
 		return leftChild;
 	}
@@ -37,6 +49,11 @@ public class Node {
 	public Node getRightChild() {
 		return rightChild;
 	}
+
+	public int getBalance(){
+		return balance;
+	}
+	
 	/**
 	 * getter for node values
 	 * @return returns node value

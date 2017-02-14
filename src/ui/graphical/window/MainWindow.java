@@ -226,7 +226,7 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	 * Method to handle the new action of the JMenuItem
 	 */
 	private void newAction() {
-		tree = new BinaryTree();
+		initTree();
 		treePanel.drawTree(tree);
 		
 		updateSaveItemUsable();
@@ -242,9 +242,8 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		
 		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			String pathString = fileChooser.getSelectedFile().getAbsolutePath();
-			if (tree == null) { tree = new BinaryTree();}
-			
-			if (tree.loadTreeFromFile(pathString)) {
+			tree = BinaryTree.loadTreeFromFile(pathString);
+			if (tree != null) {
 				treePanel.drawTree(tree);
 				
 				updateSaveItemUsable();
@@ -320,15 +319,25 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 	}
 	
 	/**
+	 * Method to initialize a new BinarayTree instance
+	 */
+	private void initTree() {
+		Boolean useAvl = DialogHandler.showConfirmDialog("Do you want to initialize an AVL Tree?", "New Tree");
+		tree = new BinaryTree(useAvl);
+	}
+	/**
 	 * Method to handle the add node action of the JMenuItem
 	 */
 	private void addNodeAction() {
+		if (tree == null) {
+			initTree();
+		}
+		
 		String nodeName = DialogHandler.showInputDialog("Enter the string you want to add");
 		if (nodeName != null) {
 			if (nodeName.isEmpty() || nodeName.length() > 3) {
 				updateStatus("The given String is not valid");
 			} else {
-				if (tree == null) { tree = new BinaryTree(); }
 				if (tree.addNode(nodeName)) {
 					treePanel.drawTree(tree);
 				} else {
