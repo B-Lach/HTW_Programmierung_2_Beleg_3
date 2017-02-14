@@ -3,10 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 import org.junit.Test;
 import ui.console.validation.*;

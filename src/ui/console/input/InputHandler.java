@@ -23,7 +23,7 @@ public class InputHandler {
 		try {
 			option = Integer.parseInt(scanner.nextLine());
 
-		} catch(Exception e) { System.out.println(e);}
+		} catch(Exception e) {}
 		return option;
 	}
 	
