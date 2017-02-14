@@ -24,7 +24,7 @@ public class BinaryTreeConstructorTests {
 	}
 	
 	@Test	
-	public void test_initWithValidFileContent() {
+	public void test_initWithInValidFileContent() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("basn");
 		list.add("abcd");
@@ -38,7 +38,7 @@ public class BinaryTreeConstructorTests {
 	}
 	
 	@Test
-	public void test_initWithInvalidFileContent() {
+	public void test_initWithValidFileContent() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("true");
 		list.add("asd");
