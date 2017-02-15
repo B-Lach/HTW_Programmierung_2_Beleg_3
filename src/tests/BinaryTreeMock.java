@@ -20,8 +20,8 @@ public class BinaryTreeMock extends BinaryTree {
 	}
 	
 	/**
-	 * Method to get the current avl option value
-	 * @return
+	 * Method to get the current AVL option value
+	 * @return The current option uesed
 	 */
 	public Boolean avlActive() {
 		return useAvl;

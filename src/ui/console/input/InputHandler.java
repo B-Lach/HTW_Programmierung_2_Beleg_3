@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class InputHandler {
 	/**
 	 * Function to get user selection from console
+	 * @param scanner The Scanner instance to use
 	 * @return The selection by the user
 	 */
 	public static int getSelectionFromConsole(Scanner scanner) {
@@ -19,6 +20,7 @@ public class InputHandler {
 	
 	/**
 	 * Function to get an integer input from console
+	 * @param scanner The Scanner instance to use
 	 * @return The input made by the user
 	 */
 	public static int getIntInput(Scanner scanner) {
@@ -34,6 +36,7 @@ public class InputHandler {
 	
 	/**
 	 * Function to get a string input from console
+	 * @param scanner The Scanner instance to use
 	 * @return The input made by the user
 	 */
 	public static String getStringInput(Scanner scanner) {
@@ -44,6 +47,7 @@ public class InputHandler {
 	
 	/**
 	 * Function to check if a input string equals a given String
+	 * @param scanner The Scanner instance to use
 	 * @param message The message to show on console
 	 * @param trueSequence The sequence to check
 	 * @return True if input equals the given string. Otherwise false

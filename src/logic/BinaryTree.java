@@ -127,8 +127,13 @@ public class BinaryTree {
 	}
 	
 	/**
+	 * 
+	 * @param 
+	 */
+	/**
 	 * Constructor to initialize a new BinaryTree instance with content from a file
 	 * @param fileContent The content of the file
+	 * @throws Exception If the fileContent wasn't validated, an exception will be triggered
 	 */
 	public BinaryTree(List<String> fileContent) throws Exception {
 		
@@ -161,10 +166,9 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * method to add a node to the tree
-	 * @param data the value of the node
-	 * @return returns true if successful
 	 * Method to re-balance the tree if needed.
+	 * @param subRoot The root of the subtree to check
+	 * 
 	 */
 	private void replaceTreeIfNeeded(Node subRoot) {
 		// Reached end of iteration

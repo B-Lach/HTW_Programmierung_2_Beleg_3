@@ -13,6 +13,7 @@ public class StringValidator {
 	
 	/**
 	 * Function to validate a given string
+	 * @param scanner The Scanner instance to use
 	 * @param input The string to validate
 	 * @param cancelSequence The sequence that represents a cancel action
 	 * @param shrink Boolean that identifies if a String should be shrinked if it's too long
