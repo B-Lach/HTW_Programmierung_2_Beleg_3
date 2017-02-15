@@ -53,6 +53,7 @@ public class Main {
 	 * Function to test addition
 	 */
 	private static void testBinaryTreeAddition() {
+		//predefined tree loaded from file
 		File valid = new File("src/tests/resources/addition.btv");
 		
 		BinaryTree tree = BinaryTree.loadTreeFromFile(valid.getAbsolutePath());
@@ -75,6 +76,7 @@ public class Main {
 	 * Function to test deletion
 	 */
 	private static void testBinaryTreeDeletion() {
+		// predefined tree loaded from file
 		File valid = new File("src/tests/resources/deletion.btv");
 		
 		BinaryTree tree = BinaryTree.loadTreeFromFile(valid.getAbsolutePath());

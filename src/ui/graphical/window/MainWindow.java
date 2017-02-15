@@ -51,10 +51,10 @@ public class MainWindow extends JFrame implements MenuItemDelegate {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Binary Tree Visualizer");
-		// center the frame on screen
-		setLocationRelativeTo(null);
 		setResizable(false);
 		setSize(WIDTH, HEIGHT);
+		// center the frame on screen - has to be done AFTER size was set
+		setLocationRelativeTo(null);
 		
 		addMenuBar();
 		addStatusBar();
